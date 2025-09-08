@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Book - Breazy Productions</title>
+
+  <!-- Main stylesheet (your provided CSS) -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- Flatpickr date/time picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navigation" role="navigation" aria-label="Main navigation">
+    <div class="logo">
+      <a href="index.html" aria-label="Breazy Productions home">
+        <img src="images/logo.png" alt="Breazy Productions logo">
+      </a>
+    </div>
+
+    <div class="nav-links" id="primary-nav" role="menu">
+      <a href="index.html" role="menuitem">Home</a>
+      <a href="about.html" role="menuitem">About</a>
+      <a href="work.html" role="menuitem">Work</a>
+      <a href="book.html" class="active" role="menuitem">Book</a>
+      <a href="terms.html" role="menuitem">Terms &amp; Conditions</a>
+    </div>
+
+    <button class="menu-btn" id="menu-btn" aria-label="Toggle menu" aria-expanded="false">
+      <span class="menu-btn__burger" aria-hidden="true"></span>
+    </button>
+  </nav>
+
+  <!-- Booking / Contact Intro -->
+  <main class="booking-page">
+    <section id="booking-intro" class="container booking-intro">
+      <h1>Want to discuss your photography or video project?</h1>
+      <p class="section-description wide-description">
+        To check availability and discuss your vision, please fill out the form below or email us directly at
+        <a href="mailto:breazyproductions7@gmail.com">breazyproductions7@gmail.com</a>.
+        We aim to reply within 48 hours.
+      </p>
+    </section>
+
+    <!-- Booking Form -->
+    <section id="booking" class="booking-section">
+      <div class="container">
+        <h2>Book <span>Now</span></h2>
+        <p class="section-description">Tell us about your project and preferred dates — we'll get back with availability and a personalised quote.</p>
+
+        <form id="booking-form" class="booking-form" action="process_form.php" method="POST" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Name *</label>
+              <input type="text" id="name" name="name" required placeholder="Your full name">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number *</label>
+              <input type="tel" id="phone" name="phone" required placeholder="+44 7XXX XXXXXX" pattern="[\d\s+\-()+]{7,}">
+            </div>
+
+            <div class="form-group">
+              <label for="event-type">Type of Project *</label>
+              <select id="event-type" name="event_type" required>
+                <option value="">Select project type</option>
+                <option value="music-video">Music Video</option>
+                <option value="promotional-product">Promotional / Product Video</option>
+                <option value="testimonial">Testimonial / Case Study</option>
+                <option value="event-promo">Event Promo</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="booking-date">Preferred Date &amp; Time *</label>
+              <input type="text" id="booking-date" name="booking_date" placeholder="Select date & time" required readonly>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us more about the shoot — style, length, location, or links to references."></textarea>
+          </div>
+
+          <div id="form-messages" class="form-message error-message" aria-live="polite"></div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="mailto:breazyproductions7@gmail.com" class="btn btn-secondary">Email Us</a>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Breazy Productions Logo">
+            </div>
+
+            <div class="footer-links">
+                <div class="footer-nav">
+                    <h4>Navigation</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="work.html" class="active">Work</a></li>
+                        <li><a href="book.html">Book</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-social">
+                    <h4>Follow</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-tiktok"></i> TikTok</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:Breazyproductions7@gmail.com">Breazyproductions7@gmail.com</a></li>
+                        <li><a href="tel:+44772846189">+44 7728 46189</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Breazy Productions. All rights reserved. Developed by James Gomez</p>
+            </div>
+        </div>
+    </footer>

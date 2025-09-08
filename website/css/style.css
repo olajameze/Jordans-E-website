@@ -1,0 +1,265 @@
+/* ----------------------------------------------------------
+   Consolidated single-file stylesheet
+   - Variables, accessibility, responsive, booking + about + hero
+   ---------------------------------------------------------- */
+
+/* ---------- Theme variables ---------- */
+:root{
+  --bg:#000;
+  --panel:#0a0a0a;
+  --muted-panel:rgba(255,255,255,0.02);
+  --text:#fff;
+  --muted-text:rgba(255,255,255,0.8);
+  --accent:#ff5e5e;
+  --accent-weak:rgba(255,94,94,0.12);
+  --success:#46b478;
+  --success-weak:rgba(70,180,120,0.12);
+  --danger:#ff5e5e;
+  --shadow:0 10px 30px rgba(0,0,0,0.6);
+
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:12px;
+
+  --gap-xs:0.5rem;
+  --gap-sm:1rem;
+  --gap-md:1.5rem;
+  --gap-lg:2.5rem;
+
+  --ff-sans:'Inter','Helvetica Neue',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica','Arial';
+  --trans:180ms cubic-bezier(.2,.9,.2,1);
+  --max-width:1200px;
+  --base-size:16px;
+}
+
+/* ---------- Reset & base ---------- */
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:100%;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--ff-sans);
+  line-height:1.6;
+  color:var(--text);
+  background:var(--bg);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Screen-reader utility */
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Skip link (add <a href="#main" class="skip-link">Skip to content</a> as first element if you want) */
+.skip-link{
+  position:absolute;top:1rem;left:1rem;background:var(--accent);color:#000;padding:.5rem .75rem;border-radius:6px;transform:translateY(-120%);transition:transform .18s ease;z-index:12000
+}
+.skip-link:focus{transform:none;outline:3px solid rgba(255,255,255,0.08)}
+
+/* ---------- Loader ---------- */
+.loader{position:fixed;inset:0;background:var(--bg);display:flex;justify-content:center;align-items:center;z-index:9999}
+.loader-spinner{width:3.125rem;height:3.125rem;border:3px solid rgba(255,255,255,0.28);border-radius:50%;border-top-color:var(--text);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Navigation ---------- */
+.navigation{
+  position:fixed;top:0;left:0;width:100%;padding:1.5rem 5%;display:flex;justify-content:space-between;align-items:center;z-index:1000;
+  background:rgba(0,0,0,0.45);backdrop-filter:blur(10px);transition:background var(--trans),padding var(--trans)
+}
+.navigation.scrolled{background:rgba(0,0,0,0.9);padding:1rem 5%}
+.logo img{height:40px;width:auto;display:block}
+
+/* Nav links */
+.nav-links{display:flex;gap:var(--gap-lg)}
+.nav-links a{color:var(--text);text-decoration:none;font-weight:500;position:relative;transition:color var(--trans)}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.nav-links a::after{content:'';position:absolute;bottom:-6px;left:0;height:2px;width:0;background:var(--accent);transition:width var(--trans)}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+
+/* Mobile menu button / burger */
+.menu-btn{display:none;cursor:pointer;width:42px;height:36px;border:none;background:transparent;align-items:center;justify-content:center;position:relative}
+.menu-btn__burger,.menu-btn__burger::before,.menu-btn__burger::after{content:'';position:absolute;left:6px;right:6px;height:3px;background:var(--text);border-radius:999px;transition:transform .28s cubic-bezier(.2,.9,.2,1),opacity .18s ease}
+.menu-btn__burger::before{transform:translateY(-9px)}
+.menu-btn__burger::after{transform:translateY(9px)}
+.menu-btn.open .menu-btn__burger{transform:rotate(45deg)}
+.menu-btn.open .menu-btn__burger::before{transform:rotate(90deg) translateX(.25rem)}
+.menu-btn.open .menu-btn__burger::after{opacity:0}
+
+/* ---------- Hero Section ---------- */
+.hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.video-container{position:absolute;inset:0;z-index:-2}
+.bg-video{width:100%;height:100%;object-fit:cover}
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,0.6);z-index:-1}
+
+.hero-content{text-align:center;max-width:50rem;padding:0 2rem;z-index:1}
+.hero-content h1{font-size:4rem;font-weight:700;margin-bottom:1rem;background:linear-gradient(45deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{font-size:1.5rem;margin-bottom:2rem;opacity:.9}
+
+/* Quote slider */
+.quote-slider{margin:2rem 0;min-height:6.25rem;position:relative}
+.quote{position:absolute;inset:auto 0 0 0;opacity:0;transition:opacity .5s ease}
+.quote.active{opacity:1}
+.quote blockquote{font-size:1.125rem;font-style:italic;line-height:1.6;max-width:37.5rem;margin:0 auto}
+
+/* CTA buttons */
+.cta-buttons{display:flex;gap:1rem;justify-content:center;margin-top:2rem}
+.btn{padding:.75rem 1.5rem;border-radius:999px;font-weight:600;text-decoration:none;display:inline-block;transition:transform var(--trans),box-shadow var(--trans),background var(--trans);cursor:pointer;border:2px solid transparent}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:transparent;color:var(--accent);transform:translateY(-3px);box-shadow:0 10px 20px rgba(255,94,94,0.22)}
+.btn-secondary{background:transparent;color:var(--text);border-color:rgba(255,255,255,0.12)}
+.btn-secondary:hover{background:#fff;color:#000;transform:translateY(-3px)}
+.btn-outline{background:transparent;border:2px solid #fff;color:#fff}
+.btn-outline:hover{background:#fff;color:#000}
+
+/* Scroll indicator */
+.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--text);display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.arrow{width:20px;height:20px;border-right:2px solid var(--text);border-bottom:2px solid var(--text);transform:rotate(45deg);animation:bounce 2s infinite}
+@keyframes bounce{0%,20%,50%,80%,100%{transform:rotate(45deg) translateY(0)}40%{transform:rotate(45deg) translateY(-10px)}60%{transform:rotate(45deg) translateY(-5px)}}
+
+/* ---------- Sections & Container ---------- */
+section{padding:5rem 0}
+.container{width:90%;max-width:var(--max-width);margin:0 auto}
+h2{font-size:2.5rem;text-align:center;margin-bottom:1rem}
+.section-description{text-align:center;font-size:1.125rem;margin-bottom:2.5rem;opacity:.85}
+
+/* ---------- Projects / Cards ---------- */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--gap-lg);margin-bottom:3rem}
+.project-card{border-radius:var(--radius-md);overflow:hidden;position:relative;box-shadow:0 5px 15px rgba(0,0,0,0.2);transition:transform var(--trans)}
+.project-card:hover{transform:translateY(-10px)}
+.project-image{position:relative;height:250px;overflow:hidden}
+.project-image img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.project-card:hover .project-image img{transform:scale(1.1)}
+.project-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease}
+.project-card:hover .project-overlay{opacity:1}
+.view-project{color:var(--text);text-decoration:none;padding:.6rem 1.25rem;border-radius:999px;border:2px solid rgba(255,255,255,0.85);font-weight:600;transition:all var(--trans)}
+.view-project:hover{background:#fff;color:#000}
+.project-info{padding:1.25rem;background:#1a1a1a}
+.project-info h3{font-size:1.125rem;margin-bottom:.5rem}
+.project-info p{opacity:.75}
+
+/* ---------- Services ---------- */
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:var(--gap-lg)}
+.service-item{text-align:center;padding:2rem;background:rgba(255,255,255,0.03);border-radius:var(--radius-md);transition:transform var(--trans)}
+.service-item:hover{transform:translateY(-10px);background:rgba(255,255,255,0.06)}
+.service-icon{font-size:3rem;margin-bottom:1rem;color:var(--accent)}
+.service-item h3{font-size:1.25rem;margin-bottom:1rem}
+
+/* ---------- Testimonials ---------- */
+.testimonials-slider{position:relative;max-width:50rem;margin:0 auto;min-height:200px}
+.testimonial{position:absolute;top:0;left:0;width:100%;opacity:0;transition:opacity .5s ease}
+.testimonial.active{opacity:1}
+.testimonial-content{background:rgba(255,255,255,0.04);padding:2rem;border-radius:var(--radius-md);text-align:center}
+.testimonial-content p{font-size:1.125rem;line-height:1.6;margin-bottom:1.25rem;font-style:italic}
+.client-info h4{font-size:1.125rem;margin-bottom:.5rem}
+.client-info p{opacity:.7}
+
+/* ---------- CTA ---------- */
+.cta-section{background:linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.8)),url('https://images.unsplash.com/photo-1536240478700-b869070f9279?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');background-size:cover;background-position:center;text-align:center;padding:5rem 0}
+.cta-content h2{font-size:2.5rem;margin-bottom:1rem}
+.cta-content p{font-size:1.125rem;margin-bottom:2rem;opacity:.9}
+
+/* ---------- Footer ---------- */
+.footer{background:var(--panel);padding:4rem 0 2rem}
+.footer-container{width:90%;max-width:var(--max-width);margin:0 auto}
+.footer-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:3rem;margin-bottom:3rem}
+.footer-logo img{height:40px;margin-bottom:1rem}
+.footer-logo p{opacity:.8;line-height:1.6}
+.footer-links h4{font-size:1.125rem;margin-bottom:1rem;position:relative;padding-bottom:.5rem}
+.footer-links h4::after{content:'';position:absolute;bottom:0;left:0;width:50px;height:2px;background:var(--accent)}
+.footer-links ul{list-style:none}
+.footer-links ul li{margin-bottom:.6rem}
+.footer-links ul li a{color:var(--text);text-decoration:none;opacity:.8;transition:opacity var(--trans)}
+.footer-links ul li a:hover{opacity:1}
+.social-icons{display:flex;gap:1rem;margin-top:1rem}
+.social-icons a{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.06);color:var(--text);text-decoration:none;transition:all var(--trans)}
+.social-icons a:hover{background:var(--accent);transform:translateY(-3px)}
+.footer-contact ul li a{display:flex;align-items:center;gap:.5rem}
+.footer-bottom{text-align:center;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06)}
+
+/* ---------- About page ---------- */
+.about{padding:6rem 0;color:var(--text)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:center}
+.about-img{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);transition:transform .4s ease,box-shadow .4s ease}
+.about-img img{width:100%;height:100%;min-height:20rem;max-height:32.5rem;object-fit:cover;display:block;transition:transform .6s ease}
+.about-img:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,0.65)}
+.about-img:hover img{transform:scale(1.03)}
+.about-content h3{font-size:1.25rem;margin-bottom:1rem;color:var(--accent);font-weight:600}
+.about-content p{font-size:1rem;line-height:1.7;margin-bottom:1rem;opacity:.95}
+
+/* ---------- Booking / Contact page ---------- */
+.booking-page{background:transparent;color:var(--text);padding-top:6rem}
+#booking-intro h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;color:var(--text)}
+.booking-section{padding:3rem 0 6rem}
+.booking-form{max-width:56.25rem;margin:0 auto;background:var(--muted-panel);padding:2rem;border-radius:var(--radius-lg);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.booking-form .form-group{display:flex;flex-direction:column;margin-bottom:.75rem}
+.booking-form label{margin-bottom:.5rem;font-weight:600;color:var(--text);opacity:.9;font-size:.95rem}
+
+/* Inputs, selects, textarea */
+.booking-form input[type="text"],.booking-form input[type="email"],.booking-form input[type="tel"],.booking-form input[type="search"],.booking-form select,.booking-form textarea,.booking-form .flatpickr-input{
+  width:100%;padding:.75rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:var(--muted-panel);color:var(--text);font-size:1rem;outline:none;transition:box-shadow .18s ease,border-color .18s ease,transform .12s ease
+}
+.booking-form input::placeholder,.booking-form textarea::placeholder{color:rgba(255,255,255,0.45)}
+.booking-form input:focus,.booking-form select:focus,.booking-form textarea:focus,.booking-form .flatpickr-input:focus{border-color:var(--accent);box-shadow:0 6px 20px rgba(255,94,94,0.08);transform:translateY(-1px)}
+
+/* Buttons in form */
+.booking-form .btn{min-width:10rem;padding:.8rem 1.25rem;border-radius:40px;font-weight:700}
+.booking-form .action-row{display:flex;gap:1rem;align-items:center;margin-top:1rem;flex-wrap:wrap}
+.form-message{padding:.9rem 1rem;border-radius:8px;margin-bottom:1rem;font-weight:600;color:var(--text)}
+.form-message.info{background:rgba(255,255,255,0.04)}
+.form-message.success{background:var(--success-weak);color:#baffc9}
+.form-message.error{background:var(--danger);color:#fff;opacity:.95}
+.error-message{margin-top:.5rem;color:#ffb3b3;font-size:.9rem}
+.booking-form .form-group .note{font-size:.9rem;opacity:.7;margin-top:.25rem}
+
+/* flatpickr tweaks */
+.flatpickr-input[readonly]{cursor:pointer}
+.flatpickr-calendar{background:var(--panel);color:var(--text);border:1px solid rgba(255,255,255,0.08)}
+
+/* ---------- Mobile menu behavior ---------- */
+.nav-links{transition:right .28s cubic-bezier(.2,.9,.2,1)}
+@media (max-width:768px){
+  .menu-btn{display:flex;z-index:1001}
+  .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);flex-direction:column;justify-content:center;align-items:center;gap:2rem}
+  .nav-links.active{right:0}
+}
+
+/* ---------- Utilities ---------- */
+.action-row a.btn{text-align:center}
+.view-all{text-align:center}
+
+/* ---------- Focus & accessibility ---------- */
+:focus{outline:none}
+:focus-visible{outline:3px solid rgba(255,94,94,0.18);outline-offset:3px;border-radius:6px}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:0.001ms!important;animation-iteration-count:1!important;transition-duration:0.001ms!important;scroll-behavior:auto!important}
+}
+
+/* ---------- Responsive adjustments ---------- */
+@media (max-width:968px){
+  .hero-content h1{font-size:3rem}
+  .cta-buttons{flex-direction:column;align-items:center}
+  .about-grid{grid-template-columns:1fr}
+}
+@media (max-width:768px){
+  .hero-content h1{font-size:2.5rem}
+  .tagline{font-size:1.2rem}
+  h2{font-size:2rem}
+  .booking-form{padding:1.25rem}
+  .booking-page{padding-top:5.5rem}
+  .action-row{flex-direction:column;align-items:stretch}
+}
+@media (max-width:480px){
+  .hero-content h1{font-size:2rem}
+  .tagline{font-size:1rem}
+  .quote blockquote{font-size:1rem}
+  .btn{padding:.6rem 1.25rem}
+  .about-img img{min-height:11rem;max-height:20rem}
+}
+
+/* ----------------------------------------------------------
+   End of stylesheet
+   Notes:
+   - Keep a backup of your original file (style.css.bak).
+   - For production: minify this file and consider splitting into partial files.
+   - If you want, I can create a small accessibility report with exact contrast issues.
+   ---------------------------------------------------------- */

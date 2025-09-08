@@ -1,0 +1,15 @@
+# Video files
+*.mp4
+*.mov
+*.webm
+
+# Environment files
+.env
+.env.local
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/

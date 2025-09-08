@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breazy Productions | Cinematic Videography</title>
+    <meta name="description" content="Professional videography services specializing in cinematic storytelling and capturing unforgettable moments.">
+    
+    <!-- Consolidated CSS imports -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" as="style" href="css/style.css">
+    <link rel="preload" as="video" href="videos/vid2.mp4">
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Loading animation -->
+    <div class="loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <header>
+        <nav class="navigation">
+            <div class="logo">
+                <img src="images/logo.png" alt="Breazy Productions Logo">
+            </div>
+            
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="about.html">About</a>
+                <a href="work.html">Work</a>
+                <a href="book.html">Book</a>
+                <a href="terms.html">Terms</a>
+            </div>
+            
+            <div class="menu-btn" id="menu-btn">
+                <div class="menu-btn__burger"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="video-container">
+                <video class="bg-video" autoplay muted loop playsinline preload="auto" id="heroVideo">
+                    <source src="videos/vid2.mp4" type="video/mp4">
+                    <source src="videos/vid2.webm" type="video/webm">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="overlay"></div>
+            </div>
+                        
+            <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
+                <h1>Breazy Productions</h1>
+                <p class="tagline">Crafting cinematic stories that capture moments forever.</p>
+                
+                <div class="quote-slider">
+                    <div class="quote active">
+                        <blockquote>
+                            "In videography, we don't just capture moments, we create memories that last forever."
+                        </blockquote>
+                    </div>
+                    <div class="quote">
+                        <blockquote>
+                            "Every frame tells a story, and every story deserves to be told beautifully."
+                        </blockquote>
+                    </div>
+                    <div class="quote">
+                        <blockquote>
+                            "Turning life's most precious moments into timeless visual treasures."
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <div class="cta-buttons">
+                    <a href="book.html" class="btn btn-primary">Book Now</a>
+                    <a href="work.html" class="btn btn-secondary">View Portfolio</a>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator">
+                <span>Scroll Down</span>
+                <div class="arrow"></div>
+            </div>
+        </section>
+
+        <section class="featured-work" id="featured">
+            <div class="container">
+                <h2 data-aos="fade-up">Featured Projects</h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">A glimpse of our recent cinematic work</p>
+                
+                <div class="projects-grid">
+                    <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="project-image">
+                            <img src="https://via.placeholder.com/600x400" alt="Wedding Cinematography Project" loading="lazy">
+                            <div class="project-overlay">
+                                <a href="#" class="view-project">View Project</a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <h3>Elena & Michael's Wedding</h3>
+                            <p>Cinematic Wedding Film</p>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="project-image">
+                            <img src="https://via.placeholder.com/600x400" alt="Commercial Project" loading="lazy">
+                            <div class="project-overlay">
+                                <a href="#" class="view-project">View Project</a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <h3>Skyline Drone Showreel</h3>
+                            <p>Aerial Cinematography</p>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="project-image">
+                            <img src="https://via.placeholder.com/600x400" alt="Documentary Project" loading="lazy">
+                            <div class="project-overlay">
+                                <a href="#" class="view-project">View Project</a>
+                            </div>
+                        </div>
+                        <div class="project-info">
+                            <h3>Urban Stories</h3>
+                            <p>Documentary Short Film</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="view-all" data-aos="fade-up" data-aos-delay="600">
+                    <a href="work.html" class="btn btn-outline">View All Projects</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="services">
+            <div class="container">
+                <h2 data-aos="fade-up">Our Services</h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">Professional videography for all occasions</p>
+                
+                <div class="services-grid">
+                    <div class="service-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="service-icon">
+                            <i class="fas fa-ring"></i>
+                        </div>
+                        <h3>Wedding Videography</h3>
+                        <p>Capture your special day with our cinematic approach to wedding storytelling.</p>
+                    </div>
+                    
+                    <div class="service-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="service-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3>Commercial Projects</h3>
+                        <p>Professional video production for businesses and brands looking to stand out.</p>
+                    </div>
+                    
+                    <div class="service-item" data-aos="fade-up" data-aos-delay="500">
+                        <div class="service-icon">
+                            <i class="fas fa-film"></i>
+                        </div>
+                        <h3>Documentaries</h3>
+                        <p>Tell compelling stories through our documentary filmmaking services.</p>
+                    </div>
+                    
+                    <div class="service-item" data-aos="fade-up" data-aos-delay="600">
+                        <div class="service-icon">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <h3>Music Videos</h3>
+                        <p>Creative and dynamic music video production for artists and bands.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <h2 data-aos="fade-up">Client Testimonials</h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">What our clients say about us</p>
+                
+                <div class="testimonials-slider" data-aos="fade-up" data-aos-delay="300">
+                    <div class="testimonial active">
+                        <div class="testimonial-content">
+                            <p>"Breazy Productions exceeded all our expectations. Our wedding video was more than we could have ever dreamed of - truly cinematic and emotional."</p>
+                            <div class="client-info">
+                                <h4>Sarah & James</h4>
+                                <p>Wedding Clients</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <p>"The commercial video they produced for our brand helped us increase engagement by 70%. Professional, creative, and delivered on time."</p>
+                            <div class="client-info">
+                                <h4>Michael Thompson</h4>
+                                <p>CEO, Horizon Tech</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <p>"Working with Breazy Productions on our music video was incredible. They understood our vision and brought it to life beautifully."</p>
+                            <div class="client-info">
+                                <h4>Sophia Rivers</h4>
+                                <p>Recording Artist</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content" data-aos="fade-up">
+                    <h2>Ready to create something amazing together?</h2>
+                    <p>Let's discuss your project and bring your vision to life</p>
+                    <a href="book.html" class="btn btn-primary">Get in Touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/logo.png" alt="Breazy Productions Logo">
+                    <p>Creating cinematic stories that stand the test of time.</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-nav">
+                        <h4>Navigation</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="about.html">About</a></li>
+                            <li><a href="work.html">Work</a></li>
+                            <li><a href="book.html">Book</a></li>
+                            <li><a href="terms.html">Terms & Conditions</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-social">
+                        <h4>Follow Us</h4>
+                        <div class="social-icons">
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" aria-label="Vimeo"><i class="fab fa-vimeo-v"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-contact">
+                        <h4>Contact</h4>
+                        <ul>
+                            <li><a href="mailto:Breazyproductions7@gmail.com"><i class="fas fa-envelope"></i> Breazyproductions7@gmail.com</a></li>
+                            <li><a href="tel:+44772846189"><i class="fas fa-phone"></i> +44 7728 46189</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Breazy Productions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts at the bottom for better performance -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="js/script.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+        
+        // Wait for the page to load
+        window.addEventListener('load', function() {
+            // Hide loader
+            document.querySelector('.loader').style.display = 'none';
+            
+            // Initialize any other scripts here
+        });
+    </script>
+</body>
+</html>
