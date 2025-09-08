@@ -316,4 +316,119 @@
     initViewportObserver();
   });
 
+  // Work page functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const videoItems = document.querySelectorAll('.video-item');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            const filterValue = button.getAttribute('data-filter');
+            
+            // Filter videos
+            videoItems.forEach(item => {
+                if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                    item.style.display = 'block';
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    });
+    
+    // Video modal functionality
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const closeModal = document.querySelector('.close-modal');
+    const playButtons = document.querySelectorAll('.play-button');
+    
+    playButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const videoItem = this.closest('.video-item');
+            const videoTitle = videoItem.querySelector('h3').textContent;
+            
+            // In a real scenario, you would set the video source based on the project
+            // For this example, we'll use a placeholder
+            modalVideo.innerHTML = '<source src="https://player.vimeo.com/external/370331493.sd.mp4?s=e90dcaba73c19e0e36f03406b47b5e33e8ca7a94&profile_id=139&oauth2_token_id=57447761" type="video/mp4">';
+            modalVideo.load();
+            
+            videoModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+    });
+    
+    closeModal.addEventListener('click', function() {
+        videoModal.classList.remove('active');
+        modalVideo.pause();
+        document.body.style.overflow = ''; // Re-enable scrolling
+    });
+    
+    // Close modal when clicking outside
+    videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+            videoModal.classList.remove('active');
+            modalVideo.pause();
+            document.body.style.overflow = '';
+        }
+    });
+    
+    // Mobile menu functionality
+    const menuBtn = document.getElementById('menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            menuBtn.classList.toggle('open');
+        });
+    }
+    
+    // Close mobile menu when clicking on a link
+    const navItems = document.querySelectorAll('.nav-links a');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            menuBtn.classList.remove('open');
+        });
+    });
+    
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navigation = document.querySelector('.navigation');
+        if (window.scrollY > 50) {
+            navigation.classList.add('scrolled');
+        } else {
+            navigation.classList.remove('scrolled');
+        }
+    });
+    
+    // Initialize animations
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 500);
+});
+
+// Page loader
+window.addEventListener('load', function() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.classList.add('hidden');
+    }
+});
+
 })();
