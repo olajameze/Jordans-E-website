@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/video-gallery.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -65,12 +64,15 @@
             <!-- Project 1 - Cafephilia -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/cafephilia-thumb.jpg">
                         <source src="../video/CAFEPHILIA FINAL COMPLETIONE.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -83,12 +85,15 @@
             <!-- Project 2 - Renegade Gym -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/renegade-gym-thumb.jpg">
                         <source src="../video/renegade gym promo CG.mov" type="video/quicktime">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -101,12 +106,15 @@
             <!-- Project 3 - Birthday Event -->
             <div class="video-item" data-category="event">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/birthday-thumb.jpg">
                         <source src="../video/AL'S 30TH BIRTHDAY FINISHED CG.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -119,12 +127,15 @@
             <!-- Project 4 - FK3 Stallion -->
             <div class="video-item" data-category="music">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/fk3-thumb.jpg">
                         <source src="../video/FK3 - STALLION .mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -137,12 +148,15 @@
             <!-- Project 5 - Logo Animation -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/logo-animation-thumb.jpg">
                         <source src="../video/LOGO FLIP ANIMATION IG.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -155,12 +169,15 @@
             <!-- Project 6 - Unilite MTB -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="none">
+                    <video preload="metadata" poster="../video/thumbnails/unilite-thumb.jpg">
                         <source src="../video/UNILITE MTB - 5300.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -169,14 +186,19 @@
                     <span class="video-category">Commercial</span>
                 </div>
             </div>
+            
+            <!-- Project 7 - Freedom Beer -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video poster="videos/thumbnails/freedom-beer-thumb.jpg" preload="none">
+                    <video preload="metadata" poster="videos/thumbnails/freedom-beer-thumb.jpg">
                         <source src="videos/FREEDOM BEER.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
-                    <div class="play-button">
+                    <div class="play-button" aria-label="Play video">
                         <i class="fas fa-play"></i>
+                    </div>
+                    <div class="video-loading" aria-hidden="true">
+                        <i class="fas fa-spinner fa-spin"></i>
                     </div>
                 </div>
                 <div class="video-info">
@@ -186,6 +208,11 @@
                 </div>
             </div>
         </section>
+        
+        <!-- No Results Message (Hidden by default) -->
+        <div class="no-results-message hidden">
+            <p>No projects found in this category. Please try another filter.</p>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -236,5 +263,6 @@
     </footer>
 
     <script src="js/script.js"></script>
+    <script src="js/video-gallery.js"></script>
 </body>
 </html>
