@@ -21,7 +21,6 @@
 
   // Accessible showMessage for forms
   function showMessage(message, type = 'info', target = null, timeout = 5000) {
-    // target: DOM node to insert message before (default: booking form)
     const container = target || qs('#booking-form') || document.body;
     if (!container) return;
 
@@ -33,7 +32,7 @@
     msg.className = `form-message ${type}`;
     msg.textContent = message;
     msg.setAttribute('role', 'alert');
-    // Insert message above the form if possible, otherwise append to body
+    
     if (container.parentNode) container.parentNode.insertBefore(msg, container);
     else document.body.appendChild(msg);
 
@@ -47,14 +46,13 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
   function isValidPhone(phone) {
-    // Accepts UK numbers (+44...) or common international formats (digits, spaces, -, parentheses)
     const cleaned = phone.replace(/[\s\-().]/g, '');
     return /^\+?\d{7,15}$/.test(cleaned);
   }
 
   // --------- Navigation (mobile menu + scroll effect) ---------
   function initNavigation() {
-    const menuBtn = qs('.menu-btn');
+    const menuBtn = qs('.menu-btn') || qs('#menu-btn');
     const navLinks = qs('.nav-links');
     const navigation = qs('.navigation');
 
@@ -296,31 +294,14 @@
     }
   }
 
-  // --------- Minimal polyfills / browser compatibility tweaks ---------
-  function initPolyfills() {
-    if (!Element.prototype.matches) {
-      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-    }
-    // classList and querySelector exist in IE10+, we avoid heavy polyfills here
-  }
-
-  // --------- Init all ---------
-  document.addEventListener('DOMContentLoaded', function () {
-    debug('DOM ready');
-    initPolyfills();
-    initNavigation();
-    initBookingCalendar();
-    initBookingForm();
-    handleUrlStatus();
-    initVideoFallback();
-    initViewportObserver();
-  });
-
-  // Work page functionality
-document.addEventListener('DOMContentLoaded', function() {
+  // --------- Work Page Functionality ---------
+  function initWorkPage() {
+    // Check if we're on the work page
+    if (!qs('.video-item')) return;
+    
     // Filter functionality
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const videoItems = document.querySelectorAll('.video-item');
+    const filterButtons = qsa('.filter-btn');
+    const videoItems = qsa('.video-item');
     
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -352,83 +333,81 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Video modal functionality
-    const videoModal = document.getElementById('videoModal');
-    const modalVideo = document.getElementById('modalVideo');
-    const closeModal = document.querySelector('.close-modal');
-    const playButtons = document.querySelectorAll('.play-button');
+    const videoModal = qs('#videoModal');
+    const modalVideo = qs('#modalVideo');
+    const closeModal = qs('.close-modal');
+    const playButtons = qsa('.play-button');
     
-    playButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const videoItem = this.closest('.video-item');
-            const videoTitle = videoItem.querySelector('h3').textContent;
-            
-            // In a real scenario, you would set the video source based on the project
-            // For this example, we'll use a placeholder
-            modalVideo.innerHTML = '<source src="https://player.vimeo.com/external/370331493.sd.mp4?s=e90dcaba73c19e0e36f03406b47b5e33e8ca7a94&profile_id=139&oauth2_token_id=57447761" type="video/mp4">';
-            modalVideo.load();
-            
-            videoModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+    if (videoModal && modalVideo && closeModal) {
+        playButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const videoItem = this.closest('.video-item');
+                const videoSrc = videoItem.getAttribute('data-video-src');
+                const videoTitle = videoItem.querySelector('h3').textContent;
+                
+                // Set video source from data attribute
+                if (videoSrc) {
+                    modalVideo.innerHTML = `<source src="${videoSrc}" type="video/mp4">`;
+                    modalVideo.load();
+                }
+                
+                videoModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            });
         });
-    });
-    
-    closeModal.addEventListener('click', function() {
-        videoModal.classList.remove('active');
-        modalVideo.pause();
-        document.body.style.overflow = ''; // Re-enable scrolling
-    });
-    
-    // Close modal when clicking outside
-    videoModal.addEventListener('click', function(e) {
-        if (e.target === videoModal) {
+        
+        closeModal.addEventListener('click', function() {
             videoModal.classList.remove('active');
-            modalVideo.pause();
-            document.body.style.overflow = '';
-        }
-    });
-    
-    // Mobile menu functionality
-    const menuBtn = document.getElementById('menu-btn');
-    const navLinks = document.querySelector('.nav-links');
-    
-    if (menuBtn) {
-        menuBtn.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            menuBtn.classList.toggle('open');
+            if (modalVideo) modalVideo.pause();
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
+        
+        // Close modal when clicking outside
+        videoModal.addEventListener('click', function(e) {
+            if (e.target === videoModal) {
+                videoModal.classList.remove('active');
+                if (modalVideo) modalVideo.pause();
+                document.body.style.overflow = '';
+            }
         });
     }
-    
-    // Close mobile menu when clicking on a link
-    const navItems = document.querySelectorAll('.nav-links a');
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            menuBtn.classList.remove('open');
+  }
+
+  // --------- Page Loader ---------
+  function initPageLoader() {
+    const loader = qs('.loader');
+    if (loader) {
+        window.addEventListener('load', function() {
+            loader.classList.add('hidden');
         });
-    });
-    
-    // Navbar scroll effect
-    window.addEventListener('scroll', function() {
-        const navigation = document.querySelector('.navigation');
-        if (window.scrollY > 50) {
-            navigation.classList.add('scrolled');
-        } else {
-            navigation.classList.remove('scrolled');
-        }
-    });
+    }
+  }
+
+  // --------- Minimal polyfills / browser compatibility tweaks ---------
+  function initPolyfills() {
+    if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    }
+    // classList and querySelector exist in IE10+, we avoid heavy polyfills here
+  }
+
+  // --------- Init all ---------
+  document.addEventListener('DOMContentLoaded', function () {
+    debug('DOM ready');
+    initPolyfills();
+    initNavigation();
+    initBookingCalendar();
+    initBookingForm();
+    handleUrlStatus();
+    initVideoFallback();
+    initViewportObserver();
+    initWorkPage();
+    initPageLoader();
     
     // Initialize animations
     setTimeout(() => {
         document.body.classList.add('loaded');
     }, 500);
-});
-
-// Page loader
-window.addEventListener('load', function() {
-    const loader = document.querySelector('.loader');
-    if (loader) {
-        loader.classList.add('hidden');
-    }
-});
+  });
 
 })();
