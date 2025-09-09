@@ -5,6 +5,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const noResultsMessage = document.querySelector('.no-results-message');
     let activeVideo = null;
     
+    // Create video modal if it doesn't exist
+    if (!document.getElementById('videoModal')) {
+        const modalHTML = `
+            <div id="videoModal" class="video-modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <video id="modalVideo" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="video-info-modal">
+                        <h3 id="modalVideoTitle"></h3>
+                        <p id="modalVideoDescription"></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+    
+    // Get modal elements
+    const videoModal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const closeModal = document.querySelector('.close-modal');
+    const modalVideoTitle = document.getElementById('modalVideoTitle');
+    const modalVideoDescription = document.getElementById('modalVideoDescription');
+    
     // Check if there are videos to initialize
     if (videoItems.length === 0) return;
     
@@ -15,21 +41,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const loadingIndicator = item.querySelector('.video-loading');
         
         if (video && playButton) {
-            // Set up video event listeners
-            setupVideoEvents(video, playButton, loadingIndicator);
-            
             // Set up click event for play button
             playButton.addEventListener('click', function(e) {
                 e.stopPropagation();
-                toggleVideoPlayback(video, playButton, loadingIndicator);
+                openVideoModal(video, item);
             });
             
-            // Click on video thumbnail to play/pause
+            // Click on video thumbnail to play in modal
             const thumbnail = item.querySelector('.video-thumbnail');
             if (thumbnail) {
                 thumbnail.addEventListener('click', function(e) {
                     if (e.target !== playButton) {
-                        toggleVideoPlayback(video, playButton, loadingIndicator);
+                        openVideoModal(video, item);
                     }
                 });
             }
@@ -38,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             thumbnail.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    toggleVideoPlayback(video, playButton, loadingIndicator);
+                    openVideoModal(video, item);
                 }
             });
         }
@@ -59,72 +82,65 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Set up video event listeners
-    function setupVideoEvents(video, playButton, loadingIndicator) {
-        // Show play button when video ends
-        video.addEventListener('ended', function() {
-            playButton.style.display = 'flex';
-            video.currentTime = 0; // Reset to beginning
-            activeVideo = null;
+    // Open video in modal
+    function openVideoModal(video, item) {
+        // Get video info
+        const title = item.querySelector('h3').textContent;
+        const description = item.querySelector('p').textContent;
+        
+        // Set modal content
+        modalVideo.innerHTML = '';
+        const source = document.createElement('source');
+        source.src = video.querySelector('source').src;
+        source.type = video.querySelector('source').type;
+        modalVideo.appendChild(source);
+        
+        modalVideoTitle.textContent = title;
+        modalVideoDescription.textContent = description;
+        
+        // Show modal
+        videoModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+        
+        // Load and play video
+        modalVideo.load();
+        modalVideo.play().catch(error => {
+            console.error('Playback failed:', error);
         });
         
-        // Show play button when video is paused
-        video.addEventListener('pause', function() {
-            playButton.style.display = 'flex';
-            if (video === activeVideo) activeVideo = null;
-        });
-        
-        // Hide play button when video plays
-        video.addEventListener('play', function() {
-            playButton.style.display = 'none';
-            activeVideo = video;
-        });
-        
-        // Show loading indicator when video is waiting
-        video.addEventListener('waiting', function() {
-            if (loadingIndicator) loadingIndicator.style.display = 'flex';
-        });
-        
-        // Hide loading indicator when video can play
-        video.addEventListener('canplay', function() {
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-        });
-        
-        // Handle video errors
-        video.addEventListener('error', function() {
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-            playButton.style.display = 'flex';
-            console.error('Video failed to load:', video.src);
-        });
+        // Set as active video
+        activeVideo = modalVideo;
     }
     
-    // Toggle video playback
-    function toggleVideoPlayback(video, playButton, loadingIndicator) {
-        // Pause any currently playing video
-        if (activeVideo && activeVideo !== video) {
-            activeVideo.pause();
-            const otherPlayButton = activeVideo.parentElement.querySelector('.play-button');
-            if (otherPlayButton) otherPlayButton.style.display = 'flex';
+    // Close modal
+    function closeVideoModal() {
+        videoModal.classList.remove('active');
+        if (modalVideo) {
+            modalVideo.pause();
+            modalVideo.currentTime = 0;
         }
-        
-        if (video.paused) {
-            // Show loading indicator
-            if (loadingIndicator) loadingIndicator.style.display = 'flex';
-            
-            // Play the video
-            const playPromise = video.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    if (loadingIndicator) loadingIndicator.style.display = 'none';
-                    playButton.style.display = 'flex';
-                    console.error('Playback failed:', error);
-                });
-            }
-        } else {
-            video.pause();
-        }
+        document.body.style.overflow = ''; // Re-enable scrolling
+        activeVideo = null;
     }
+    
+    // Close modal events
+    if (closeModal) {
+        closeModal.addEventListener('click', closeVideoModal);
+    }
+    
+    // Close modal when clicking outside
+    videoModal.addEventListener('click', function(e) {
+        if (e.target === videoModal) {
+            closeVideoModal();
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+            closeVideoModal();
+        }
+    });
     
     // Filter videos by category
     function filterVideos(filterValue) {
@@ -143,14 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.style.transform = 'translateY(0)';
                 }, 10);
             } else {
-                // Pause video if it's playing
-                const video = item.querySelector('video');
-                if (video && !video.paused) {
-                    video.pause();
-                    const playButton = item.querySelector('.play-button');
-                    if (playButton) playButton.style.display = 'flex';
-                }
-                
                 // Hide with animation
                 item.style.opacity = '0';
                 item.style.transform = 'translateY(20px)';
@@ -173,13 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle page visibility change - pause video when tab is hidden
     document.addEventListener('visibilitychange', function() {
         if (document.hidden && activeVideo) {
-            activeVideo.pause();
-        }
-    });
-    
-    // Add keyboard navigation support
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && activeVideo) {
             activeVideo.pause();
         }
     });

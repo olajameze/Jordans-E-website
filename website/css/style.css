@@ -882,6 +882,110 @@ select:focus {
     }
 }
 
+/* Video Modal Styles */
+.video-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.video-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.video-modal .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    background: var(--panel);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.video-modal video {
+    width: 100%;
+    display: block;
+    background: #000;
+}
+
+.video-info-modal {
+    padding: 1.5rem;
+    background: var(--muted-panel);
+}
+
+.video-info-modal h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.video-info-modal p {
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 1.5rem;
+    transition: background 0.3s ease;
+}
+
+.close-modal:hover {
+    background: var(--accent);
+}
+
+/* Loading indicator for videos */
+.video-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 2rem;
+    display: none;
+    z-index: 5;
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .video-modal .modal-content {
+        width: 95%;
+        border-radius: var(--radius-md);
+    }
+    
+    .video-info-modal {
+        padding: 1rem;
+    }
+    
+    .video-info-modal h3 {
+        font-size: 1.2rem;
+    }
+}
+
 /* ----------------------------------------------------------
    End of stylesheet
    Notes:
