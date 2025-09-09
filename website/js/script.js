@@ -127,122 +127,121 @@
   }
 
   // --------- Booking form: validation + AJAX submit ---------
-  function initBookingForm() {
-    const form = qs('#booking-form');
-    if (!form) {
-      debug('Booking form not present');
+  // --------- Booking form: validation + AJAX submit ---------
+function initBookingForm() {
+  const form = qs('#booking-form');
+  if (!form) {
+    debug('Booking form not present');
+    return;
+  }
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  // Field-level validation helper
+  function validateField(field) {
+    const name = field.name || field.id || 'field';
+    const val = (field.value || '').trim();
+    let ok = true;
+    let err = '';
+
+    if (field.hasAttribute('required') && !val) {
+      ok = false; err = 'This field is required';
+    } else if (field.type === 'email' && val && !isValidEmail(val)) {
+      ok = false; err = 'Enter a valid email';
+    } else if (field.type === 'tel' && val && !isValidPhone(val)) {
+      ok = false; err = 'Enter a valid phone number';
+    }
+
+    // show or remove inline error message
+    const existing = field.parentNode.querySelector('.error-message');
+    if (!ok) {
+      if (existing) existing.textContent = err;
+      else {
+        const d = createEl('div');
+        d.className = 'error-message';
+        d.textContent = err;
+        field.parentNode.appendChild(d);
+      }
+      field.classList.add('error');
+    } else {
+      if (existing) existing.remove();
+      field.classList.remove('error');
+    }
+    return ok;
+  }
+
+  // Validate entire form, returns boolean
+  function validateForm() {
+    let valid = true;
+    const requiredFields = qsa('#booking-form [required]');
+    requiredFields.forEach(f => {
+      if (!validateField(f)) valid = false;
+    });
+    // Extra checks for email/phone even if not required attribute
+    const email = qs('#email'); if (email && email.value.trim() && !isValidEmail(email.value)) { validateField(email); valid = false; }
+    const phone = qs('#phone'); if (phone && phone.value.trim() && !isValidPhone(phone.value)) { validateField(phone); valid = false; }
+    return valid;
+  }
+
+  // Real-time validation on blur/input
+  qsa('#booking-form input, #booking-form textarea, #booking-form select').forEach(input => {
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+      const existing = input.parentNode.querySelector('.error-message');
+      if (existing && input.value.trim()) existing.remove();
+      input.classList.remove('error');
+    });
+  });
+
+  // Handle submission (AJAX)
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    // Remove previous messages
+    const oldMsg = document.querySelector('.form-message'); 
+    if (oldMsg) oldMsg.remove();
+
+    if (!validateForm()) {
+      showMessage('Please fix the errors in the form and try again.', 'error', form);
       return;
     }
 
-    const submitBtn = form.querySelector('button[type="submit"]');
+    // disable button & show loading
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      submitBtn.classList.add('btn-loading');
+    }
 
-    // Field-level validation helper
-    function validateField(field) {
-      const name = field.name || field.id || 'field';
-      const val = (field.value || '').trim();
-      let ok = true;
-      let err = '';
+    try {
+      const formData = new FormData(form);
+      // Send via fetch
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (field.hasAttribute('required') && !val) {
-        ok = false; err = 'This field is required';
-      } else if (field.type === 'email' && val && !isValidEmail(val)) {
-        ok = false; err = 'Enter a valid email';
-      } else if (field.type === 'tel' && val && !isValidPhone(val)) {
-        ok = false; err = 'Enter a valid phone number';
-      }
-
-      // show or remove inline error message
-      const existing = field.parentNode.querySelector('.error-message');
-      if (!ok) {
-        if (existing) existing.textContent = err;
-        else {
-          const d = createEl('div');
-          d.className = 'error-message';
-          d.textContent = err;
-          field.parentNode.appendChild(d);
-        }
-        field.classList.add('error');
+      const data = await res.json();
+      
+      if (data.status === 'success') {
+        showMessage(data.message, 'success', form);
+        form.reset();
+        // reset flatpickr alt input display if present
+        const fp = qs('#booking-date'); if (fp && fp._flatpickr) fp._flatpickr.clear();
       } else {
-        if (existing) existing.remove();
-        field.classList.remove('error');
+        showMessage(data.message, 'error', form);
       }
-      return ok;
-    }
-
-    // Validate entire form, returns boolean
-    function validateForm() {
-      let valid = true;
-      const requiredFields = qsa('#booking-form [required]');
-      requiredFields.forEach(f => {
-        if (!validateField(f)) valid = false;
-      });
-      // Extra checks for email/phone even if not required attribute
-      const email = qs('#email'); if (email && email.value.trim() && !isValidEmail(email.value)) { validateField(email); valid = false; }
-      const phone = qs('#phone'); if (phone && phone.value.trim() && !isValidPhone(phone.value)) { validateField(phone); valid = false; }
-      return valid;
-    }
-
-    // Real-time validation on blur/input
-    qsa('#booking-form input, #booking-form textarea, #booking-form select').forEach(input => {
-      input.addEventListener('blur', () => validateField(input));
-      input.addEventListener('input', () => {
-        const existing = input.parentNode.querySelector('.error-message');
-        if (existing && input.value.trim()) existing.remove();
-        input.classList.remove('error');
-      });
-    });
-
-    // Handle submission (AJAX)
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      // Remove previous messages
-      const oldMsg = document.querySelector('.form-message'); if (oldMsg) oldMsg.remove();
-
-      if (!validateForm()) {
-        showMessage('Please fix the errors in the form and try again.', 'error', form);
-        return;
-      }
-
-      // disable button & show loading
+    } catch (err) {
+      debug('Network error', err);
+      showMessage('Network error — please check your connection and try again.', 'error', form);
+    } finally {
       if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+        submitBtn.classList.remove('btn-loading');
       }
-
-      // Prepare data (FormData works for file uploads too)
-      const action = form.getAttribute('action') || window.location.href;
-      const method = (form.getAttribute('method') || 'POST').toUpperCase();
-
-      try {
-        const formData = new FormData(form);
-        // Send via fetch
-        const res = await fetch(action, {
-          method,
-          body: formData,
-        });
-
-        if (res.ok) {
-          showMessage('Thank you! Your booking request has been sent successfully.', 'success', form);
-          form.reset();
-          // reset flatpickr alt input display if present
-          const fp = qs('#booking-date'); if (fp && fp._flatpickr) fp._flatpickr.clear();
-        } else {
-          // Try to parse JSON error, fallback to generic
-          let text = 'There was a problem sending your message. Please try again later.';
-          try { const json = await res.json(); if (json && json.message) text = json.message; } catch (e) { /* ignore */ }
-          showMessage(text, 'error', form);
-        }
-      } catch (err) {
-        debug('Network error', err);
-        showMessage('Network error — please check your connection and try again.', 'error', form);
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit';
-        }
-      }
-    });
-  }
+    }
+  });
+}
 
   // --------- URL param status handler (show success/error after redirect) ---------
   function handleUrlStatus() {

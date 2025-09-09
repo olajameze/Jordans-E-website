@@ -1,6 +1,6 @@
 <?php
 // Only display errors in development environment
-if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
+if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 } else {
@@ -8,9 +8,12 @@ if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
     ini_set('display_errors', 0);
 }
 
-// Your email address (use the one shown on website for consistency)
-$to_email = "olagomez@live.co.uk";
+// Your email address
+$to_email = "breazyproductions7@gmail.com"; // Changed to match your website
 $subject_prefix = "Breazy Productions Booking: ";
+
+// Set content type to JSON
+header('Content-Type: application/json');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get and sanitize form data
@@ -30,7 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($booking_date)) $errors[] = "Booking date is required";
     
     if (!empty($errors)) {
-        header("Location: book.html?status=error&message=" . urlencode(implode(", ", $errors)) . "#booking");
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error',
+            'message' => implode(", ", $errors)
+        ]);
         exit();
     }
     
@@ -56,15 +63,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mail_result = mail($to_email, $email_subject, $email_body, $headers);
     
     if ($mail_result) {
-        header("Location: book.html?status=success#booking");
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Thank you! Your booking request has been sent successfully.'
+        ]);
         exit();
     } else {
-        header("Location: book.html?status=error&message=Email+sending+failed#booking");
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Sorry, there was an error sending your message. Please try again.'
+        ]);
         exit();
     }
 } else {
-    // Not a POST request, redirect to form
-    header("Location: book.html");
+    http_response_code(405);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Method not allowed'
+    ]);
     exit();
 }
 ?>
