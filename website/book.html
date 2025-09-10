@@ -12,6 +12,9 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+  
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
   <!-- Flatpickr date/time picker -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -54,7 +57,7 @@
         <h2>Book <span>Now</span></h2>
         <p class="section-description">Tell us about your project and preferred dates — we'll get back with availability and a personalised quote.</p>
 
-        <form id="booking-form" class="booking-form" action="process_form.php" method="POST" novalidate>
+        <form id="booking-form" class="booking-form" novalidate></form>
           <div class="form-grid">
             <div class="form-group">
               <label for="name">Name *</label>
