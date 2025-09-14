@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Open video in modal
-    function openVideoModal(video, item) {
+    async function openVideoModal(video, item) {
         // Get video info
         const title = item.querySelector('h3').textContent;
         const description = item.querySelector('p').textContent;
@@ -102,11 +102,26 @@ document.addEventListener('DOMContentLoaded', function() {
         videoModal.classList.add('active');
         document.body.style.overflow = 'hidden'; // Prevent scrolling
         
-        // Load and play video
-        modalVideo.load();
-        modalVideo.play().catch(error => {
-            console.error('Playback failed:', error);
-        });
+        try {
+            // Load video first
+            modalVideo.load();
+            
+            // Wait for video to be ready
+            await new Promise((resolve) => {
+                modalVideo.addEventListener('canplay', resolve, { once: true });
+                // Add a timeout in case the video takes too long to load
+                setTimeout(resolve, 5000);
+            });
+            
+            // Only try to play if the modal is still active
+            if (videoModal.classList.contains('active')) {
+                await modalVideo.play();
+            }
+        } catch (error) {
+            console.warn('Video playback warning:', error);
+            // Continue showing the video even if autoplay fails
+            // User can click play manually
+        }
         
         // Set as active video
         activeVideo = modalVideo;
@@ -114,9 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close modal
     function closeVideoModal() {
+        if (modalVideo && !modalVideo.paused) {
+            modalVideo.pause();
+        }
         videoModal.classList.remove('active');
         if (modalVideo) {
-            modalVideo.pause();
             modalVideo.currentTime = 0;
         }
         document.body.style.overflow = ''; // Re-enable scrolling
