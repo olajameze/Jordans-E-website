@@ -5,55 +5,68 @@
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
 
-    // Initialize EmailJS with public key
-    emailjs.init("cHFT-wrNq-nXjCQFq", {
-        publicKey: "cHFT-wrNq-nXjCQFq",
-    });
-
-    // Mobile menu functionality
-    const menuBtn = document.getElementById('menu-btn');
-    const navLinks = document.querySelector('.nav-links');
-    let isMenuOpen = false;
-
-    function toggleMenu() {
-        isMenuOpen = !isMenuOpen;
-        menuBtn.classList.toggle('open');
-        navLinks.classList.toggle('active');
-        document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    // Initialize EmailJS with public key (only on pages that need it)
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init("cHFT-wrNq-nXjCQFq", {
+            publicKey: "cHFT-wrNq-nXjCQFq",
+        });
     }
 
-    if (menuBtn && navLinks) {
-        // Menu button click handler
-        menuBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleMenu();
-        });
+    // Mobile Menu Functionality
+    function initializeMobileMenu() {
+        const menuBtn = document.getElementById('menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        let isMenuOpen = false;
 
-        // Close menu when clicking on a link
-        const links = document.querySelectorAll('.nav-links a');
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                if (isMenuOpen) {
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            menuBtn.classList.toggle('open');
+            navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+
+        if (menuBtn && navLinks) {
+            // Menu button click handler
+            menuBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Close menu when clicking on a link
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (isMenuOpen) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (isMenuOpen && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
                     toggleMenu();
                 }
             });
-        });
 
-        // Close menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (isMenuOpen && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
-                toggleMenu();
-            }
-        });
+            // Close menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isMenuOpen) {
+                    toggleMenu();
+                }
+            });
 
-        // Close menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && isMenuOpen) {
-                toggleMenu();
-            }
-        });
+            // Close menu on resize (if mobile menu is open)
+            window.addEventListener('resize', () => {
+                if (isMenuOpen && window.innerWidth > 768) {
+                    toggleMenu();
+                }
+            });
+        }
     }
+
+    // Initialize mobile menu
+    initializeMobileMenu();
 
   const DEBUG = false; // set true for console debug lo        // Prepare the complete request data
         const emailData = {
