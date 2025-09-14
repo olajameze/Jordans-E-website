@@ -1,12 +1,25 @@
 /* js/script.js - Main site & booking page behaviour */
-/* Requires: flatpickr (optional), fetch API (modern browsers) */
+/* Requires: flatpickr, emailjs */
 
-(function () {
-  'use strict';
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
 
-  const DEBUG = false; // set true for console debug logs
+    // Initialize EmailJS with public key
+    emailjs.init("cHFT-wrNq-nXjCQFq", {
+        publicKey: "cHFT-wrNq-nXjCQFq",
+    });
 
-  function debug(...args) {
+  const DEBUG = false; // set true for console debug lo        // Prepare the complete request data
+        const emailData = {
+            service_id: 'service_cnon06x', // Verified service ID
+            template_id: 'template_ee5q99h',
+            user_id: 'cHFT-wrNq-nXjCQFq', // Your public key
+            template_params: {
+                ...templateParams,
+                'g-recaptcha-response': '03AHJ_ASjnLA214KSNKFJAK12sfKASfehbmfd...' // Optional: Remove if not using reCAPTCHA
+            }
+        }; function debug(...args) {
     if (DEBUG) console.log('[Debug]', ...args);
   }
 
@@ -135,28 +148,67 @@ function fixPlaysinline() {
     }
 }
 
+// Handle cleanup when page is hidden or closed
+function handleCleanup() {
+    // Add any cleanup tasks here
+    const video = document.getElementById('heroVideo');
+    if (video) {
+        video.pause();
+    }
+}
+
 // Call this function when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     fixPlaysinline();
 });
 
+// Use pagehide instead of unload
+window.addEventListener('pagehide', handleCleanup);
+// Also handle visibilitychange for better browser support
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        handleCleanup();
+    }
+});
+
   // --------- Booking form: validation + EmailJS submit ---------
 function initBookingForm() {
-  const form = document.getElementById('booking-form');
-  if (!form) {
-    console.log('Booking form not present');
-    return;
-  }
+    const form = document.getElementById('booking-form');
+    if (!form) {
+        console.log('Booking form not present');
+        return;
+    }
 
-  // Remove PHP action since we're handling with JS
-  form.removeAttribute('action');
-  
-  const submitBtn = form.querySelector('button[type="submit"]');
-  
-  // Initialize EmailJS with your public key
-  (function() {
-    emailjs.init("cHFT-wrNq-nXjCQFq"); // Replace with your actual EmailJS public key
-  })();
+    console.log('Initializing booking form');
+
+    // Form submit handler
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted');
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        // Clear previous messages
+        const messagesDiv = document.getElementById('form-messages');
+        messagesDiv.textContent = '';
+        messagesDiv.className = 'form-message';
+
+        // Collect form data
+        const templateParams = {
+            to_name: "Breazy Productions",
+            from_name: form.name.value,
+            email: form.email.value, // Changed from from_email to match template
+            phone_number: form.phone.value, // Changed from phone to match template
+            project_type: form.event_type.value, // Changed from event_type to match template
+            preferred_date: form.booking_date.value, // Changed from booking_date to match template
+            message: form.message.value,
+            reply_to: form.email.value // Added for proper reply-to functionality
+        };
 
   // Basic validation functions
   function isValidEmail(email) {
@@ -281,22 +333,63 @@ function initBookingForm() {
     return isValid;
   }
 
-  // Handle form submission
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+          // Send email using EmailJS
+        console.log('Sending email with params:', templateParams);
+        // Prepare the complete request data
+        const emailData = {
+            service_id: 'service_cnon06x',
+            template_id: 'template_65yg6dd',
+            user_id: 'cHFT-wrNq-nXjCQFq', // Your public key
+            template_params: templateParams
+        };
+
+        console.log('Sending email with data:', emailData);
+
+        console.log('Attempting to send email with service ID:', emailData.service_id);
+        
+        emailjs.send(
+            emailData.service_id,
+            emailData.template_id,
+            emailData.template_params,
+            emailData.user_id
+        ).then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                messagesDiv.textContent = 'Thank you! Your booking request has been sent. We\'ll get back to you within 48 hours.';
+                messagesDiv.className = 'form-message success';
+                form.reset();
+            })
+            .catch(function(error) {
+                console.error('FAILED...', error);
+                console.error('Service ID used:', emailData.service_id);
+                messagesDiv.textContent = 'Sorry, there was a problem sending your message. Please try again or email us directly.';
+                messagesDiv.className = 'form-message error';
+            })
+            .finally(function() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            });
+    });
+
+        // Initialize date picker
+        if (document.getElementById('booking-date')) {
+            flatpickr("#booking-date", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                minDate: "today",
+                maxDate: new Date().fp_incr(90),
+                minTime: "09:00",
+                maxTime: "17:00",
+                disable: [
+                    function(date) {
+                        return date.getDay() === 0; // Disable Sundays
+                    }
+                ]
+            });
+        }
+    };
     
-    // Validate form
-    if (!validateForm()) {
-      showStatus('Please fix the errors in the form and try again.');
-      return;
-    }
-    
-    // Show loading state
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    
-    try {
+    async function handleFormSubmit(form) {
+        try {
       // Collect form data
       const formData = {
         name: document.getElementById('name').value,
@@ -335,8 +428,8 @@ function initBookingForm() {
       submitBtn.textContent = originalText;
       submitBtn.disabled = false;
     }
-  });
-}
+  }
+
 
 // Initialize the form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
@@ -508,5 +601,4 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('loaded');
     }, 500);
   });
-
-})();
+});

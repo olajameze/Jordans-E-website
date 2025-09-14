@@ -57,7 +57,7 @@
         <h2>Book <span>Now</span></h2>
         <p class="section-description">Tell us about your project and preferred dates — we'll get back with availability and a personalised quote.</p>
 
-        <form id="booking-form" class="booking-form" novalidate></form>
+        <form id="booking-form" class="booking-form" novalidate>
           <div class="form-grid">
             <div class="form-group">
               <label for="name">Name *</label>
@@ -97,10 +97,10 @@
             <textarea id="message" name="message" rows="5" placeholder="Tell us more about the shoot — style, length, location, or links to references."></textarea>
           </div>
 
-          <div id="form-messages" class="form-message error-message" aria-live="polite"></div>
+          <div id="form-messages" class="form-message" aria-live="polite"></div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit Booking Request</button>
             <a href="mailto:breazyproductions7@gmail.com" class="btn btn-secondary">Email Us</a>
           </div>
         </form>
@@ -157,6 +157,77 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="js/script.js"></script>
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize EmailJS with your public key
+        emailjs.init("cHFT-wrNq-nXjCQFq");
+        
+        // Initialize datepicker
+        flatpickr("#booking-date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            maxDate: new Date().fp_incr(90),
+            minTime: "09:00",
+            maxTime: "17:00",
+            disable: [
+                function(date) {
+                    return date.getDay() === 0; // Disable Sundays
+                }
+            ]
+        });
+
+        // Handle form submission
+        const form = document.getElementById('booking-form');
+        const messagesDiv = document.getElementById('form-messages');
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.textContent;
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+                
+                // Clear previous messages
+                messagesDiv.textContent = '';
+                messagesDiv.className = 'form-message';
+
+                // Collect form data
+                const templateParams = {
+                    to_name: "Breazy Productions",
+                    from_name: form.name.value,
+                    from_email: form.email.value,
+                    phone: form.phone.value,
+                    event_type: form.event_type.value,
+                    booking_date: form.booking_date.value,
+                    message: form.message.value
+                };
+
+                // Send email using EmailJS with your correct service ID
+                emailjs.send('service_cnon06x', 'template_65yg6dd', templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        messagesDiv.textContent = 'Thank you! Your booking request has been sent. We\'ll get back to you within 48 hours.';
+                        messagesDiv.className = 'form-message success';
+                        form.reset();
+                    })
+                    .catch(function(error) {
+                        console.log('Service ID used:', 'service_cnon06x');
+                        console.error('FAILED...', error);
+                        messagesDiv.textContent = 'Sorry, there was a problem sending your message. Please try again or email us directly.';
+                        messagesDiv.className = 'form-message error';
+                    })
+                    .finally(function() {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    });
+            });
+        }
+    });
+  </script>
 </body>
 </html>
