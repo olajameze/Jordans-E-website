@@ -10,6 +10,33 @@ document.addEventListener('DOMContentLoaded', function() {
         publicKey: "cHFT-wrNq-nXjCQFq",
     });
 
+    // Mobile menu functionality
+    const menuBtn = document.getElementById('menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    let isMenuOpen = false;
+
+    if (menuBtn) {
+        menuBtn.addEventListener('click', function() {
+            isMenuOpen = !isMenuOpen;
+            menuBtn.classList.toggle('open');
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+        });
+
+        // Close menu when clicking on a link
+        const links = document.querySelectorAll('.nav-links a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                if (isMenuOpen) {
+                    isMenuOpen = false;
+                    menuBtn.classList.remove('open');
+                    navLinks.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
+
   const DEBUG = false; // set true for console debug lo        // Prepare the complete request data
         const emailData = {
             service_id: 'service_cnon06x', // Verified service ID
