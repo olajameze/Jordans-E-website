@@ -1,9 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're on a page with video gallery
+    const videoItems = document.querySelectorAll('.video-item');
+    if (videoItems.length === 0) return;
+    
+    // Initialize video gallery
+    initVideoGallery();
+});
+
+function initVideoGallery() {
     // Elements
     const videoItems = document.querySelectorAll('.video-item');
     const filterButtons = document.querySelectorAll('.filter-btn');
     const noResultsMessage = document.querySelector('.no-results-message');
-    let activeVideo = null;
     
     // Create video modal if it doesn't exist
     if (!document.getElementById('videoModal')) {
