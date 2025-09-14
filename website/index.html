@@ -46,7 +46,7 @@
     <main>
         <section class="hero">
             <div class="video-container">
-                <video class="bg-video" autoplay muted loop playsinline preload="auto" id="heroVideo">
+                <video  class="bg-video" autoplay muted loop preload="auto" id="heroVideo"playsinline webkit-playsinline>
                     <source src="videos/vid2.mp4" type="video/mp4">
                     <source src="videos/vid2.webm" type="video/webm">
                     Your browser does not support the video tag.
@@ -295,7 +295,22 @@
             // Hide loader
             document.querySelector('.loader').style.display = 'none';
             
-            // Initialize any other scripts here
+            // Ensure proper video behavior across browsers
+            const heroVideo = document.getElementById('heroVideo');
+            if (heroVideo) {
+                // Set video styles for consistent display
+                heroVideo.style.objectFit = 'cover';
+                heroVideo.style.width = '100%';
+                heroVideo.style.height = '100%';
+                
+                // Handle Firefox-specific behavior
+                if (navigator.userAgent.indexOf('Firefox') !== -1) {
+                    heroVideo.style.position = 'absolute';
+                    heroVideo.style.top = '50%';
+                    heroVideo.style.left = '50%';
+                    heroVideo.style.transform = 'translate(-50%, -50%)';
+                }
+            }
         });
     </script>
 </body>

@@ -126,7 +126,20 @@
     });
   }
 
-  // --------- Booking form: validation + AJAX submit ---------
+// Firefox playsinline fix
+function fixPlaysinline() {
+    const video = document.getElementById('heroVideo');
+    if (video && !video.hasAttribute('playsinline')) {
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
+    }
+}
+
+// Call this function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    fixPlaysinline();
+});
+
   // --------- Booking form: validation + EmailJS submit ---------
 function initBookingForm() {
   const form = document.getElementById('booking-form');
