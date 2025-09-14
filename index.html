@@ -48,9 +48,8 @@
     <main>
         <section class="hero">
             <div class="video-container">
-                <video  class="bg-video" autoplay muted loop preload="auto" id="heroVideo"playsinline webkit-playsinline>
+                <video class="bg-video" autoplay muted loop playsinline data-object-fit="cover" id="heroVideo">
                     <source src="videos/vid2.mp4" type="video/mp4">
-                    <source src="videos/vid2.webm" type="video/webm">
                     Your browser does not support the video tag.
                 </video>
                 <div class="overlay"></div>
@@ -297,21 +296,74 @@
             // Hide loader
             document.querySelector('.loader').style.display = 'none';
             
-            // Ensure proper video behavior across browsers
+            // Ensure proper video behavior
             const heroVideo = document.getElementById('heroVideo');
             if (heroVideo) {
-                // Set video styles for consistent display
-                heroVideo.style.objectFit = 'cover';
-                heroVideo.style.width = '100%';
-                heroVideo.style.height = '100%';
-                
-                // Handle Firefox-specific behavior
-                if (navigator.userAgent.indexOf('Firefox') !== -1) {
-                    heroVideo.style.position = 'absolute';
-                    heroVideo.style.top = '50%';
-                    heroVideo.style.left = '50%';
-                    heroVideo.style.transform = 'translate(-50%, -50%)';
-                }
+                // Force video play
+                heroVideo.play().catch(function(error) {
+                    console.log("Video play failed", error);
+                });
+
+                // Handle video loading
+                heroVideo.addEventListener('loadedmetadata', function() {
+                    heroVideo.play().catch(function(error) {
+                        console.log("Video play failed after load", error);
+                    });
+                });
+
+                // Handle browser back/forward cache
+                window.addEventListener('pageshow', function(event) {
+                    if (event.persisted) {
+                        heroVideo.play().catch(function(error) {
+                            console.log("Video play failed on pageshow", error);
+                        });
+                    }
+                });
+            }
+
+            // Mobile Menu
+            const menuBtn = document.getElementById('menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            let isMenuOpen = false;
+
+            if (menuBtn && navLinks) {
+                menuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    isMenuOpen = !isMenuOpen;
+                    menuBtn.classList.toggle('open');
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('menu-open');
+                });
+
+                // Close menu when clicking links
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menuBtn.classList.remove('open');
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        isMenuOpen = false;
+                    });
+                });
+
+                // Close on outside click
+                document.addEventListener('click', (e) => {
+                    if (isMenuOpen && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                        menuBtn.classList.remove('open');
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        isMenuOpen = false;
+                    }
+                });
+
+                // Close on escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && isMenuOpen) {
+                        menuBtn.classList.remove('open');
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        isMenuOpen = false;
+                    }
+                });
             }
         });
     </script>
