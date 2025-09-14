@@ -15,12 +15,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const navLinks = document.querySelector('.nav-links');
     let isMenuOpen = false;
 
-    if (menuBtn) {
-        menuBtn.addEventListener('click', function() {
-            isMenuOpen = !isMenuOpen;
-            menuBtn.classList.toggle('open');
-            navLinks.classList.toggle('active');
-            document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    function toggleMenu() {
+        isMenuOpen = !isMenuOpen;
+        menuBtn.classList.toggle('open');
+        navLinks.classList.toggle('active');
+        document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    }
+
+    if (menuBtn && navLinks) {
+        // Menu button click handler
+        menuBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleMenu();
         });
 
         // Close menu when clicking on a link
@@ -28,12 +35,23 @@ document.addEventListener('DOMContentLoaded', function() {
         links.forEach(link => {
             link.addEventListener('click', () => {
                 if (isMenuOpen) {
-                    isMenuOpen = false;
-                    menuBtn.classList.remove('open');
-                    navLinks.classList.remove('active');
-                    document.body.style.overflow = '';
+                    toggleMenu();
                 }
             });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (isMenuOpen && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+                toggleMenu();
+            }
+        });
+
+        // Close menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) {
+                toggleMenu();
+            }
         });
     }
 
