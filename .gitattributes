@@ -8,3 +8,7 @@ videos/*.mp4 filter=lfs diff=lfs merge=lfs -text
 videos/*.mov filter=lfs diff=lfs merge=lfs -text
 videos/*.avi filter=lfs diff=lfs merge=lfs -text
 videos/*.MP4 filter=lfs diff=lfs merge=lfs -text
+videos/FK3[[:space:]]-[[:space:]]STALLION[[:space:]].mp4 filter=lfs diff=lfs merge=lfs -text
+videos/hero.mp4 filter=lfs diff=lfs merge=lfs -text
+videos/UNILITE[[:space:]]MTB[[:space:]]-[[:space:]]5300.mp4 filter=lfs diff=lfs merge=lfs -text
+videos/LOGO[[:space:]]FLIP[[:space:]]ANIMATION[[:space:]]IG.mp4 filter=lfs diff=lfs merge=lfs -text
