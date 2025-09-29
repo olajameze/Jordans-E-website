@@ -63,16 +63,19 @@
             <div class="form-group">
               <label for="name">Name *</label>
               <input type="text" id="name" name="name" required placeholder="Your full name">
+              <div class="error-message" id="name-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
               <label for="email">Email *</label>
               <input type="email" id="email" name="email" required placeholder="you@example.com">
+              <div class="error-message" id="email-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
               <label for="phone">Phone Number *</label>
               <input type="tel" id="phone" name="phone" required placeholder="+44 7XXX XXXXXX" pattern="[\d\s+\-()+]{7,}">
+              <div class="error-message" id="phone-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
@@ -85,11 +88,13 @@
                 <option value="event-promo">Event Promo</option>
                 <option value="other">Other</option>
               </select>
+              <div class="error-message" id="event-type-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
               <label for="booking-date">Preferred Date &amp; Time *</label>
               <input type="text" id="booking-date" name="booking_date" placeholder="Select date & time" required readonly>
+              <div class="error-message" id="booking-date-error" aria-live="polite"></div>
             </div>
           </div>
 
@@ -101,7 +106,12 @@
           <div id="form-messages" class="form-message" aria-live="polite"></div>
 
           <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-text">Submit Booking Request</span>
+              <span class="btn-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
             <a href="mailto:breazyproductions7@gmail.com" class="btn btn-secondary">Email Us</a>
           </div>
         </form>
@@ -187,15 +197,24 @@
                 e.preventDefault();
                 
                 const submitBtn = form.querySelector('button[type="submit"]');
-                const originalBtnText = submitBtn.textContent;
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnSpinner = submitBtn.querySelector('.btn-spinner');
+                const originalBtnText = btnText.textContent;
                 
                 // Show loading state
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Sending...';
+                btnText.textContent = 'Sending...';
+                btnSpinner.style.display = 'inline-block';
                 
                 // Clear previous messages
                 messagesDiv.textContent = '';
                 messagesDiv.className = 'form-message';
+                
+                // Clear all field error messages
+                const errorMessages = document.querySelectorAll('.error-message');
+                errorMessages.forEach(error => {
+                    error.textContent = '';
+                });
 
                 // Collect form data
                 const templateParams = {
@@ -224,7 +243,8 @@
                     })
                     .finally(function() {
                         submitBtn.disabled = false;
-                        submitBtn.textContent = originalBtnText;
+                        btnText.textContent = originalBtnText;
+                        btnSpinner.style.display = 'none';
                     });
             });
         }
