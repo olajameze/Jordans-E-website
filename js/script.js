@@ -223,211 +223,179 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // --------- Booking form: validation + EmailJS submit ---------
-    function initBookingForm() {
-        const form = document.getElementById('booking-form');
-        if (!form) {
-            console.log('Booking form not present');
+// --------- Booking form: validation + EmailJS submit ---------
+function initBookingForm() {
+    const form = document.getElementById('booking-form');
+    if (!form) {
+        console.log('Booking form not present');
+        return;
+    }
+
+    console.log('Initializing booking form');
+
+    // Initialize EmailJS for booking form
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init("cHFT-wrNq-nXjCQFq"); // Remove the nested config object
+    }
+
+    // Form submit handler
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted');
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        // Clear previous messages
+        const messagesDiv = document.getElementById('form-messages');
+        if (messagesDiv) {
+            messagesDiv.textContent = '';
+            messagesDiv.className = 'form-message';
+        }
+
+        // Validate form before sending
+        if (!validateForm()) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
             return;
         }
 
-        console.log('Initializing booking form');
+        // Collect form data
+        const templateParams = {
+            to_name: "Breazy Productions",
+            from_name: form.name.value,
+            email: form.email.value,
+            phone_number: form.phone.value,
+            project_type: form.event_type.value,
+            preferred_date: form.booking_date.value,
+            message: form.message.value,
+            reply_to: form.email.value
+        };
 
-        // Form submit handler
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submitted');
-            
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
+        console.log('Sending email with params:', templateParams);
 
-            // Clear previous messages
-            const messagesDiv = document.getElementById('form-messages');
-            messagesDiv.textContent = '';
-            messagesDiv.className = 'form-message';
-
-            // Collect form data
-            const templateParams = {
-                to_name: "Breazy Productions",
-                from_name: form.name.value,
-                email: form.email.value,
-                phone_number: form.phone.value,
-                project_type: form.event_type.value,
-                preferred_date: form.booking_date.value,
-                message: form.message.value,
-                reply_to: form.email.value
-            };
-
-            // Show status message
-            function showStatus(message, type = 'error') {
-                // Remove existing messages
-                const existingMsg = document.querySelector('.form-message');
-                if (existingMsg) existingMsg.remove();
-                
-                const statusMessage = document.createElement('div');
-                statusMessage.className = `form-message ${type === 'success' ? 'success-message' : 'error-message'}`;
-                statusMessage.textContent = message;
-                statusMessage.setAttribute('aria-live', 'polite');
-                
-                // Insert before form actions
-                const formActions = form.querySelector('.form-actions');
-                form.insertBefore(statusMessage, formActions);
-                
-                // Scroll to message
-                statusMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Hide message after 5 seconds for success
-                if (type === 'success') {
-                    setTimeout(() => {
-                        statusMessage.style.opacity = '0';
-                        setTimeout(() => statusMessage.remove(), 300);
-                    }, 5000);
-                }
-            }
-
-            // Validate form
-            function validateForm() {
-                const name = document.getElementById('name');
-                const email = document.getElementById('email');
-                const phone = document.getElementById('phone');
-                const eventType = document.getElementById('event-type');
-                const bookingDate = document.getElementById('booking-date');
-                
-                let isValid = true;
-                
-                // Reset error states
-                document.querySelectorAll('.error-field').forEach(el => {
-                    el.classList.remove('error-field');
-                });
-                
-                document.querySelectorAll('.error-text').forEach(el => {
-                    el.remove();
-                });
-                
-                // Validate name
-                if (!name.value.trim()) {
-                    name.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Name is required';
-                    name.parentNode.appendChild(error);
-                    isValid = false;
-                }
-                
-                // Validate email
-                if (!email.value.trim()) {
-                    email.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Email is required';
-                    email.parentNode.appendChild(error);
-                    isValid = false;
-                } else if (!isValidEmail(email.value)) {
-                    email.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Please enter a valid email address';
-                    email.parentNode.appendChild(error);
-                    isValid = false;
-                }
-                
-                // Validate phone
-                if (!phone.value.trim()) {
-                    phone.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Phone number is required';
-                    phone.parentNode.appendChild(error);
-                    isValid = false;
-                } else if (!isValidPhone(phone.value)) {
-                    phone.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Please enter a valid phone number';
-                    phone.parentNode.appendChild(error);
-                    isValid = false;
-                }
-                
-                // Validate event type
-                if (!eventType.value) {
-                    eventType.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Please select a project type';
-                    eventType.parentNode.appendChild(error);
-                    isValid = false;
-                }
-                
-                // Validate booking date
-                if (!bookingDate.value) {
-                    bookingDate.classList.add('error-field');
-                    const error = document.createElement('div');
-                    error.className = 'error-text';
-                    error.textContent = 'Please select a date and time';
-                    bookingDate.parentNode.appendChild(error);
-                    isValid = false;
-                }
-                
-                return isValid;
-            }
-
-            // Send email using EmailJS
-            console.log('Sending email with params:', templateParams);
-            // Prepare the complete request data
-            const emailData = {
-                service_id: 'service_cnon06x',
-                template_id: 'template_65yg6dd',
-                user_id: 'cHFT-wrNq-nXjCQFq',
-                template_params: templateParams
-            };
-
-            console.log('Sending email with data:', emailData);
-            console.log('Attempting to send email with service ID:', emailData.service_id);
-            
-            emailjs.send(
-                emailData.service_id,
-                emailData.template_id,
-                emailData.template_params,
-                emailData.user_id
-            ).then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
+        // Send email using EmailJS - simplified approach
+        emailjs.send('service_cnon06x', 'template_65yg6dd', templateParams)
+            .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+                if (messagesDiv) {
                     messagesDiv.textContent = 'Thank you! Your booking request has been sent. We\'ll get back to you within 48 hours.';
                     messagesDiv.className = 'form-message success';
-                    form.reset();
-                })
-                .catch(function(error) {
-                    console.error('FAILED...', error);
-                    console.error('Service ID used:', emailData.service_id);
+                }
+                form.reset();
+                
+                // Clear flatpickr if it exists
+                const dateInput = document.getElementById('booking-date');
+                if (dateInput && dateInput._flatpickr) {
+                    dateInput._flatpickr.clear();
+                }
+            })
+            .catch(function(error) {
+                console.error('FAILED...', error);
+                if (messagesDiv) {
                     messagesDiv.textContent = 'Sorry, there was a problem sending your message. Please try again or email us directly.';
                     messagesDiv.className = 'form-message error';
-                })
-                .finally(function() {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                });
-        });
-
-        // Initialize date picker
-        if (document.getElementById('booking-date')) {
-            flatpickr("#booking-date", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                minDate: "today",
-                maxDate: new Date().fp_incr(90),
-                minTime: "09:00",
-                maxTime: "17:00",
-                disable: [
-                    function(date) {
-                        return date.getDay() === 0; // Disable Sundays
-                    }
-                ]
+                }
+            })
+            .finally(function() {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
             });
+    });
+
+    // Validate form function
+    function validateForm() {
+        const name = document.getElementById('name');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const eventType = document.getElementById('event-type');
+        const bookingDate = document.getElementById('booking-date');
+        
+        let isValid = true;
+        
+        // Reset error states
+        document.querySelectorAll('.error-field').forEach(el => {
+            el.classList.remove('error-field');
+        });
+        
+        document.querySelectorAll('.error-text').forEach(el => {
+            el.remove();
+        });
+        
+        // Validate name
+        if (!name.value.trim()) {
+            name.classList.add('error-field');
+            showFieldError(name, 'Name is required');
+            isValid = false;
         }
+        
+        // Validate email
+        if (!email.value.trim()) {
+            email.classList.add('error-field');
+            showFieldError(email, 'Email is required');
+            isValid = false;
+        } else if (!isValidEmail(email.value)) {
+            email.classList.add('error-field');
+            showFieldError(email, 'Please enter a valid email address');
+            isValid = false;
+        }
+        
+        // Validate phone
+        if (!phone.value.trim()) {
+            phone.classList.add('error-field');
+            showFieldError(phone, 'Phone number is required');
+            isValid = false;
+        } else if (!isValidPhone(phone.value)) {
+            phone.classList.add('error-field');
+            showFieldError(phone, 'Please enter a valid phone number');
+            isValid = false;
+        }
+        
+        // Validate event type
+        if (!eventType.value) {
+            eventType.classList.add('error-field');
+            showFieldError(eventType, 'Please select a project type');
+            isValid = false;
+        }
+        
+        // Validate booking date
+        if (!bookingDate.value) {
+            bookingDate.classList.add('error-field');
+            showFieldError(bookingDate, 'Please select a date and time');
+            isValid = false;
+        }
+        
+        return isValid;
     }
+
+    function showFieldError(field, message) {
+        const error = document.createElement('div');
+        error.className = 'error-text';
+        error.textContent = message;
+        field.parentNode.appendChild(error);
+    }
+
+    // Initialize date picker
+    if (document.getElementById('booking-date')) {
+        flatpickr("#booking-date", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            minDate: "today",
+            maxDate: new Date().fp_incr(90),
+            minTime: "09:00",
+            maxTime: "17:00",
+            disable: [
+                function(date) {
+                    return date.getDay() === 0; // Disable Sundays
+                }
+            ]
+        });
+    }
+}
 
     // Initialize the form when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
