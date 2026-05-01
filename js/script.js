@@ -1,73 +1,12 @@
 /* js/script.js - Main site & booking page behaviour */
 /* Requires: flatpickr, emailjs */
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    'use strict';
+'use strict';
 
-    // Initialize EmailJS with public key (only on pages that need it)
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init("cHFT-wrNq-nXjCQFq", {
-            publicKey: "cHFT-wrNq-nXjCQFq",
-        });
-    }
-
-    // Mobile Menu Functionality - Updated version
-    function initMobileNavigation() {
-        const menuBtn = document.querySelector('.menu-btn');
-        const navLinks = document.querySelector('.nav-links');
-        
-        if (!menuBtn || !navLinks) return;
-        
-        function toggleMenu() {
-            const isOpen = navLinks.classList.contains('active');
-            navLinks.classList.toggle('active', !isOpen);
-            menuBtn.classList.toggle('active', !isOpen);
-            menuBtn.setAttribute('aria-expanded', String(!isOpen));
-            document.body.style.overflow = isOpen ? '' : 'hidden';
-        }
-        
-        menuBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleMenu();
-        });
-        
-        // Close when clicking outside
-        document.addEventListener('click', (e) => {
-            if (navLinks.classList.contains('active') && 
-                !navLinks.contains(e.target) && 
-                !menuBtn.contains(e.target)) {
-                toggleMenu();
-            }
-        });
-        
-        // Close on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
-                toggleMenu();
-            }
-        });
-        
-        // Close when clicking nav links (mobile)
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 768 && navLinks.classList.contains('active')) {
-                    toggleMenu();
-                }
-            });
-        });
-        
-        // Close menu on resize (if mobile menu is open)
-        window.addEventListener('resize', () => {
-            if (navLinks.classList.contains('active') && window.innerWidth > 768) {
-                toggleMenu();
-            }
-        });
-    }
-
-    // Initialize mobile menu
-    initMobileNavigation();
+// Initialize EmailJS with public key
+if (typeof emailjs !== 'undefined') {
+    emailjs.init("cHFT-wrNq-nXjCQFq");
+}
 
     const DEBUG = false; // set true for console debug logs
 
@@ -193,11 +132,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Firefox playsinline fix
     function fixPlaysinline() {
-        const video = document.getElementById('heroVideo');
-        if (video && !video.hasAttribute('playsinline')) {
-            video.setAttribute('playsinline', 'true');
-            video.setAttribute('webkit-playsinline', 'true');
-        }
+        const videos = qsa('video');
+        videos.forEach(video => {
+            // Ensure muted property is set for autoplay support
+            if (video.hasAttribute('autoplay')) {
+                video.muted = true;
+            }
+            
+            if (video.hasAttribute('playsinline') || video.hasAttribute('autoplay')) {
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+            }
+        });
     }
 
     // Handle cleanup when page is hidden or closed
@@ -208,11 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
             video.pause();
         }
     }
-
-    // Call this function when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        fixPlaysinline();
-    });
 
     // Use pagehide instead of unload
     window.addEventListener('pagehide', handleCleanup);
@@ -244,11 +185,15 @@ function initBookingForm() {
         console.log('Form submitted');
         
         const submitBtn = form.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.textContent;
+        const btnText = submitBtn.querySelector('.btn-text');
+        const btnSpinner = submitBtn.querySelector('.btn-spinner');
+        const originalBtnText = btnText ? btnText.textContent : submitBtn.textContent;
         
         // Show loading state
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
+        
+        if (btnText) btnText.textContent = 'Sending...';
+        if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
         // Clear previous messages
         const messagesDiv = document.getElementById('form-messages');
@@ -260,7 +205,8 @@ function initBookingForm() {
         // Validate form before sending
         if (!validateForm()) {
             submitBtn.disabled = false;
-            submitBtn.textContent = originalBtnText;
+            if (btnText) btnText.textContent = originalBtnText;
+            if (btnSpinner) btnSpinner.style.display = 'none';
             return;
         }
 
@@ -268,10 +214,10 @@ function initBookingForm() {
         const templateParams = {
             to_name: "Breazy Productions",
             from_name: form.name.value,
-            email: form.email.value,
-            phone_number: form.phone.value,
-            project_type: form.event_type.value,
-            preferred_date: form.booking_date.value,
+            from_email: form.email.value,
+            phone: form.phone.value,
+            event_type: form.event_type.value,
+            booking_date: form.booking_date.value,
             message: form.message.value,
             reply_to: form.email.value
         };
@@ -285,6 +231,7 @@ function initBookingForm() {
                 if (messagesDiv) {
                     messagesDiv.textContent = 'Thank you! Your booking request has been sent. We\'ll get back to you within 48 hours.';
                     messagesDiv.className = 'form-message success';
+                    messagesDiv.classList.add('animate-success');
                 }
                 form.reset();
                 
@@ -303,7 +250,8 @@ function initBookingForm() {
             })
             .finally(function() {
                 submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
+                if (btnText) btnText.textContent = originalBtnText;
+                if (btnSpinner) btnSpinner.style.display = 'none';
             });
     });
 
@@ -397,11 +345,6 @@ function initBookingForm() {
     }
 }
 
-    // Initialize the form when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initBookingForm();
-    });
-
     // --------- URL param status handler (show success/error after redirect) ---------
     function handleUrlStatus() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -452,85 +395,6 @@ function initBookingForm() {
         }
     }
 
-    // --------- Work Page Functionality ---------
-    function initWorkPage() {
-        // Check if we're on the work page
-        if (!qs('.video-item')) return;
-        
-        // Filter functionality
-        const filterButtons = qsa('.filter-btn');
-        const videoItems = qsa('.video-item');
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all buttons
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
-                button.classList.add('active');
-                
-                const filterValue = button.getAttribute('data-filter');
-                
-                // Filter videos
-                videoItems.forEach(item => {
-                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
-                        item.style.display = 'block';
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'translateY(0)';
-                        }, 10);
-                    } else {
-                        item.style.opacity = '0';
-                        item.style.transform = 'translateY(20px)';
-                        setTimeout(() => {
-                            item.style.display = 'none';
-                        }, 300);
-                    }
-                });
-            });
-        });
-        
-        // Video modal functionality
-        const videoModal = qs('#videoModal');
-        const modalVideo = qs('#modalVideo');
-        const closeModal = qs('.close-modal');
-        const playButtons = qsa('.play-button');
-        
-        if (videoModal && modalVideo && closeModal) {
-            playButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const videoItem = this.closest('.video-item');
-                    const videoSrc = videoItem.getAttribute('data-video-src');
-                    const videoTitle = videoItem.querySelector('h3').textContent;
-                    
-                    // Set video source from data attribute
-                    if (videoSrc) {
-                        modalVideo.innerHTML = `<source src="${videoSrc}" type="video/mp4">`;
-                        modalVideo.load();
-                    }
-                    
-                    videoModal.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling
-                });
-            });
-            
-            closeModal.addEventListener('click', function() {
-                videoModal.classList.remove('active');
-                if (modalVideo) modalVideo.pause();
-                document.body.style.overflow = ''; // Re-enable scrolling
-            });
-            
-            // Close modal when clicking outside
-            videoModal.addEventListener('click', function(e) {
-                if (e.target === videoModal) {
-                    videoModal.classList.remove('active');
-                    if (modalVideo) modalVideo.pause();
-                    document.body.style.overflow = '';
-                }
-            });
-        }
-    }
-
     // --------- Page Loader ---------
     function initPageLoader() {
         const loader = qs('.loader');
@@ -555,11 +419,11 @@ function initBookingForm() {
         initPolyfills();
         initNavigation();
         initBookingCalendar();
+        fixPlaysinline();
         initBookingForm();
         handleUrlStatus();
         initVideoFallback();
         initViewportObserver();
-        initWorkPage();
         initPageLoader();
         
         // Initialize animations
@@ -567,4 +431,3 @@ function initBookingForm() {
             document.body.classList.add('loaded');
         }, 500);
     });
-});

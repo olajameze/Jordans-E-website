@@ -1440,6 +1440,29 @@ select:focus {
     }
 }
 
+/* Video Modal Specific Styles */
+.modal-video-wrapper {
+    position: relative;
+    width: 100%;
+    /* Maintain aspect ratio, e.g., 16:9 */
+    padding-bottom: 56.25%; /* For 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    background-color: #000; /* Fallback background */
+    border-radius: var(--border-radius);
+}
+
+.modal-video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure video fits within the wrapper */
+    display: block;
+}
+
+
 /* Video Modal Styles */
 .video-modal {
     position: fixed;
@@ -1470,6 +1493,10 @@ select:focus {
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow);
+}
+
+.modal-video-wrapper.loading .modal-video-loading {
+    display: flex; /* Show spinner when loading class is active */
 }
 
 .video-modal video {
@@ -1516,16 +1543,19 @@ select:focus {
     background: var(--accent);
 }
 
-/* Loading indicator for videos */
-.video-loading {
+/* Loading indicator for modal videos */
+.modal-video-loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
     color: #fff;
     font-size: 2rem;
-    display: none;
-    z-index: 5;
+    display: none; /* Hidden by default, shown via .loading class on wrapper */
+    z-index: 1;
 }
 
 /* Responsive adjustments for modal */

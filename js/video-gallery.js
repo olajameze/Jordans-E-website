@@ -1,6 +1,7 @@
 // Video Gallery functionality
 let activeVideo = null;
 let videoModal = null;
+let modalVideoWrapper = null; // New: Reference to the video wrapper
 let modalVideo = null;
 let modalVideoTitle = null;
 let modalVideoDescription = null;
@@ -40,20 +41,22 @@ function closeVideoModal() {
 async function openVideoModal(video, item) {
     if (!videoModal || !modalVideo) return;
     
-    const sourceElement = video.querySelector('source');
-    if (!sourceElement) {
+    const sources = video.querySelectorAll('source');
+    if (sources.length === 0) {
         console.error('No video source found');
         return;
     }
     
     const title = item.querySelector('h3')?.textContent || 'Video';
     const description = item.querySelector('p')?.textContent || '';
+
+    // Show loading spinner
+    if (modalVideoWrapper) modalVideoWrapper.classList.add('loading');
     
     modalVideo.innerHTML = '';
-    const source = document.createElement('source');
-    source.src = sourceElement.src;
-    source.type = sourceElement.type || 'video/mp4';
-    modalVideo.appendChild(source);
+    sources.forEach(source => {
+        modalVideo.appendChild(source.cloneNode(true));
+    });
     
     if (modalVideoTitle) modalVideoTitle.textContent = title;
     if (modalVideoDescription) modalVideoDescription.textContent = description;
@@ -64,16 +67,22 @@ async function openVideoModal(video, item) {
     try {
         modalVideo.load();
         
-        await new Promise((resolve) => {
-            modalVideo.addEventListener('canplay', resolve, { once: true });
-            setTimeout(resolve, 5000);
+        await new Promise((resolve, reject) => {
+            modalVideo.oncanplay = resolve;
+            modalVideo.onerror = () => reject(new Error("Video file not found or format not supported"));
+            // Fallback timeout
+            setTimeout(() => resolve(), 5000);
         });
         
+        if (modalVideoWrapper) modalVideoWrapper.classList.remove('loading');
+
         if (videoModal.classList.contains('active')) {
             await modalVideo.play();
         }
     } catch (error) {
-        console.warn('Video playback warning:', error);
+        console.error('Video playback error:', error);
+        if (modalVideoWrapper) modalVideoWrapper.classList.remove('loading');
+        if (modalVideoDescription) modalVideoDescription.textContent = "Error: Video could not be loaded.";
     }
     
     activeVideo = modalVideo;
@@ -118,6 +127,7 @@ function initVideoGallery() {
     
     videoModal = document.getElementById('videoModal');
     modalVideo = document.getElementById('modalVideo');
+    modalVideoWrapper = document.getElementById('modalVideoWrapper'); // Get reference to wrapper
     const closeModalBtn = document.querySelector('.close-modal');
     modalVideoTitle = document.getElementById('modalVideoTitle');
     modalVideoDescription = document.getElementById('modalVideoDescription');

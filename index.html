@@ -51,7 +51,8 @@
     <main>
         <section class="hero">
             <div class="video-container">
-                <video class="bg-video" autoplay muted loop id="heroVideo">
+                <video class="bg-video" autoplay muted loop playsinline id="heroVideo">
+                    <source src="videos/hero.webm" type="video/webm">
                     <source src="videos/hero.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -284,7 +285,6 @@
     <!-- Scripts at the bottom for better performance -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="js/script.js"></script>
     
     <script>
         // Initialize AOS

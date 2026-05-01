@@ -69,7 +69,8 @@
             <!-- Project 1 - Cafephilia -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/cafephilia-final-completione-poster.jpg">
+                        <source src="videos/cafephilia-final-completione.webm" type="video/webm"/>
                         <source src="videos/cafephilia-final-completione.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
@@ -90,7 +91,9 @@
             <!-- Project 3 - Birthday Event -->
             <div class="video-item" data-category="event">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/birthday-event-poster.jpg">
+                        <source src="videos/birthday-event.webm" type="video/webm"/>
+                        <source src="videos/birthday-event.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
                     <div class="play-button" aria-label="Play video">
@@ -110,7 +113,8 @@
             <!-- Project 4 - FK3 Stallion -->
             <div class="video-item" data-category="music">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/fk3-stallion-poster.jpg">
+                        <source src="videos/fk3-stallion.webm" type="video/webm"/>
                         <source src="videos/fk3-stallion.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
@@ -131,7 +135,8 @@
             <!-- Project 5 - Logo Animation -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/logo-flip-animation-ig-poster.jpg">
+                        <source src="videos/logo-flip-animation-ig.webm" type="video/webm"/>
                         <source src="videos/logo-flip-animation-ig.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
@@ -150,9 +155,10 @@
             </div>
 
             <!-- Project 6 - Unilite MTB -->
-            <div class="video-item" data-category="commercial">
+            <div class="video-item" data-category="music">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/kay-simmit-proverbs-poster.jpg">
+                        <source src="videos/kay-simmit-proverbs.webm" type="video/webm"/>
                         <source src="videos/kay-simmit-proverbs.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
@@ -166,14 +172,15 @@
                 <div class="video-info">
                     <h3>Freestyling video</h3>
                     <p>Dynamic video showcasing upcoming artist Kay Simmit</p>
-                    <span class="video-category">music-video</span>
+                    <span class="video-category">Music Video</span>
                 </div>
             </div>
             
             <!-- Project 7 - Freedom Beer -->
             <div class="video-item" data-category="commercial">
                 <div class="video-thumbnail">
-                    <video preload="metadata">
+                    <video preload="metadata" playsinline muted poster="images/posters/team-renegade-training-poster.jpg">
+                        <source src="videos/team-renegade-training.webm" type="video/webm"/>
                         <source src="videos/team-renegade-training.mp4" type="video/mp4"/>
                         Your browser does not support the video tag.
                     </video>
@@ -202,9 +209,14 @@
     <div id="videoModal" class="video-modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <video id="modalVideo" controls>
-                Your browser does not support the video tag.
-            </video>
+            <div id="modalVideoWrapper" class="modal-video-wrapper">
+                <video id="modalVideo" controls playsinline>
+                    Your browser does not support the video tag.
+                </video>
+                <div id="modalVideoLoading" class="modal-video-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </div>
             <div class="video-info-modal">
                 <h3 id="modalVideoTitle"></h3>
                 <p id="modalVideoDescription"></p>
