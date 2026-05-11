@@ -12,3 +12,7 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+.vercel
+
+# Optional local preview of copy script output
+dist/
