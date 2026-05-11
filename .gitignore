@@ -13,3 +13,6 @@ Thumbs.db
 # Dependencies
 node_modules/
 .vercel
+
+# Vercel build output (generated on deploy; source of truth is repo root)
+dist/
