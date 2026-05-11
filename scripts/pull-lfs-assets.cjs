@@ -3,8 +3,10 @@
  * If deployments serve pointer text instead of binary MP4s, videos fail in the browser.
  *
  * On Vercel: Project → Settings → Git → enable Git Large File Storage.
- * `git lfs pull` often fails in CI (exit 2); we use fetch + checkout and fallbacks.
+ * `git lfs pull` often fails in CI; we use fetch + checkout and fallbacks.
  * @see https://vercel.com/changelog/git-lfs-support
+ *
+ * Do not set GIT_LFS_PROGRESS — unless it is an absolute path to a log file, Git LFS errors out.
  */
 const fs = require('fs');
 const path = require('path');
@@ -13,15 +15,17 @@ const { execSync, spawnSync } = require('child_process');
 const onVercel = process.env.VERCEL === '1';
 const videoDir = path.join(__dirname, '..', 'videos');
 
-const env = {
-  ...process.env,
-  GIT_TERMINAL_PROMPT: '0',
-  /** Some CI shallow clones confuse LFS pull; allow explicit endpoint if needed */
-  GIT_LFS_PROGRESS: '1',
-};
+/** Never pass fake GIT_LFS_PROGRESS (e.g. "1"); it must be an absolute path or omitted. */
+function buildEnv() {
+  const e = { ...process.env, GIT_TERMINAL_PROMPT: '0' };
+  delete e.GIT_LFS_PROGRESS;
+  return e;
+}
+
+const env = buildEnv();
 
 function hasGitLfs() {
-  return spawnSync('git', ['lfs', 'version'], { encoding: 'utf8' }).status === 0;
+  return spawnSync('git', ['lfs', 'version'], { encoding: 'utf8', env }).status === 0;
 }
 
 /** LFS pointer files start with this line (ASCII text) */
@@ -64,6 +68,37 @@ function tryRun(cmd) {
   return false;
 }
 
+/** Fixes "batch request: missing protocol" when LFS batch URL is empty (Vercel CI). */
+function ensureOriginAndLfsEndpoint() {
+  const repoUrl = process.env.VERCEL_GIT_REPOSITORY_URL || '';
+  const gr = spawnSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf8', env });
+  let originUrl = gr.status === 0 ? gr.stdout.trim() : '';
+
+  if (!originUrl && repoUrl) {
+    const gitUrl = repoUrl.endsWith('.git') ? repoUrl : `${repoUrl}.git`;
+    console.log('[pull-lfs-assets] Adding origin remote:', gitUrl);
+    tryRun(`git remote add origin "${gitUrl}"`);
+    originUrl = gitUrl;
+  } else if (originUrl) {
+    console.log('[pull-lfs-assets] origin:', originUrl);
+  }
+
+  const cloneUrl = repoUrl
+    ? repoUrl.endsWith('.git')
+      ? repoUrl
+      : `${repoUrl}.git`
+    : originUrl;
+
+  if (!cloneUrl || !cloneUrl.includes('github.com')) {
+    console.warn('[pull-lfs-assets] No GitHub clone URL for LFS endpoint (set VERCEL_GIT_REPOSITORY_URL or origin).');
+    return;
+  }
+
+  const lfsEndpoint = `${cloneUrl}/info/lfs`;
+  console.log('[pull-lfs-assets] git config (local) lfs.url →', lfsEndpoint);
+  tryRun(`git config --local lfs.url "${lfsEndpoint}"`);
+}
+
 if (!needsMaterialize()) {
   console.log('[pull-lfs-assets] Video files look like real MP4s (not LFS pointers). Nothing to do.');
   process.exit(0);
@@ -83,6 +118,10 @@ console.log('[pull-lfs-assets] LFS pointers detected; materializing objects…')
 
 try {
   run('git lfs install');
+
+  if (onVercel) {
+    ensureOriginAndLfsEndpoint();
+  }
 
   const attempts = [
     sha && `git lfs fetch origin ${sha}`,
