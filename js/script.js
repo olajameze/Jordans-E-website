@@ -72,6 +72,8 @@ if (typeof emailjs !== 'undefined') {
             menuBtn.classList.toggle('active', isOpen);
             menuBtn.classList.toggle('open', isOpen);
             menuBtn.setAttribute('aria-expanded', String(isOpen));
+            menuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+            document.body.classList.toggle('menu-open', isOpen);
         }
 
         menuBtn.addEventListener('click', (e) => {
@@ -92,6 +94,12 @@ if (typeof emailjs !== 'undefined') {
         // Close when clicking a nav link (mobile)
         qsa('.nav-links a').forEach(link => {
             link.addEventListener('click', () => toggleMenu(false));
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                toggleMenu(false);
+            }
         });
 
         // Add/remove scrolled class on navigation based on scrollY
@@ -130,19 +138,15 @@ if (typeof emailjs !== 'undefined') {
         });
     }
 
-    // Firefox playsinline fix
+    // Inline playback for iOS Safari + Firefox sets attributes programmatically (avoids static HTML compat lint noise)
     function fixPlaysinline() {
         const videos = qsa('video');
-        videos.forEach(video => {
-            // Ensure muted property is set for autoplay support
+        videos.forEach((video) => {
             if (video.hasAttribute('autoplay')) {
                 video.muted = true;
             }
-            
-            if (video.hasAttribute('playsinline') || video.hasAttribute('autoplay')) {
-                video.setAttribute('playsinline', '');
-                video.setAttribute('webkit-playsinline', '');
-            }
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
         });
     }
 
@@ -186,14 +190,13 @@ function initBookingForm() {
         
         const submitBtn = form.querySelector('button[type="submit"]');
         const btnText = submitBtn.querySelector('.btn-text');
-        const btnSpinner = submitBtn.querySelector('.btn-spinner');
         const originalBtnText = btnText ? btnText.textContent : submitBtn.textContent;
         
         // Show loading state
         submitBtn.disabled = true;
-        
+        submitBtn.classList.add('is-loading');
+
         if (btnText) btnText.textContent = 'Sending...';
-        if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
         // Clear previous messages
         const messagesDiv = document.getElementById('form-messages');
@@ -205,8 +208,8 @@ function initBookingForm() {
         // Validate form before sending
         if (!validateForm()) {
             submitBtn.disabled = false;
+            submitBtn.classList.remove('is-loading');
             if (btnText) btnText.textContent = originalBtnText;
-            if (btnSpinner) btnSpinner.style.display = 'none';
             return;
         }
 
@@ -250,8 +253,8 @@ function initBookingForm() {
             })
             .finally(function() {
                 submitBtn.disabled = false;
+                submitBtn.classList.remove('is-loading');
                 if (btnText) btnText.textContent = originalBtnText;
-                if (btnSpinner) btnSpinner.style.display = 'none';
             });
     });
 

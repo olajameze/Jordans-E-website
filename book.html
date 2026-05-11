@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
   <title>Book - Breazy Productions</title>
 
   <!-- Consolidated CSS imports -->
@@ -18,6 +19,7 @@
   <script src="js/script.js" defer></script>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
   <!-- Navigation -->
   <header>
     <nav class="navigation">
@@ -27,7 +29,7 @@
             </a>
         </div>
         
-        <div class="nav-links">
+        <div class="nav-links" id="primary-nav">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="work.html">Work</a>
@@ -35,28 +37,31 @@
             <a href="terms.html">Terms</a>
         </div>
         
-        <div class="menu-btn" id="menu-btn">
-            <div class="menu-btn__burger"></div>
-        </div>
+        <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
+            <span class="menu-btn__burger" aria-hidden="true"></span>
+        </button>
     </nav>
   </header>
 
-  <!-- Booking / Contact Intro -->
-  <main class="booking-page">
-    <section id="booking-intro" class="container booking-intro">
-      <h1>Want to discuss your photography or video project?</h1>
-      <p class="section-description wide-description">
-        To check availability and discuss your vision, please fill out the form below or email us directly at
+    <!-- Booking / Contact Intro -->
+    <main id="main" class="booking-page">
+    <section id="booking-intro" class="booking-intro container">
+      <p class="booking-eyebrow">Availability &amp; quotes</p>
+      <h1>Let&rsquo;s plan your next shoot</h1>
+      <p class="booking-lead">
+        Share your idea, timeline, and budget &mdash; we usually reply within 48 hours. You can also email us at
         <a href="mailto:breazyproductions7@gmail.com">breazyproductions7@gmail.com</a>.
-        We aim to reply within 48 hours.
       </p>
     </section>
 
     <!-- Booking Form -->
-    <section id="booking" class="booking-section">
+    <section id="booking" class="booking-section" aria-labelledby="booking-form-heading">
       <div class="container">
-        <h2>Book <span>Now</span></h2>
-        <p class="section-description">Tell us about your project and preferred dates — we'll get back with availability and a personalised quote.</p>
+        <div class="booking-form-shell">
+          <header class="booking-form-header">
+            <h2 id="booking-form-heading" class="booking-form-title">Request a booking</h2>
+            <p class="booking-form-sub">Tell us about your genre, location, and references &mdash; the more context, the faster we can quote.</p>
+          </header>
 
         <form id="booking-form" class="booking-form" novalidate>
           <div class="form-grid">
@@ -98,23 +103,24 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group form-group--full">
             <label for="message">Message</label>
             <textarea id="message" name="message" rows="5" placeholder="Tell us more about the shoot — style, length, location, or links to references."></textarea>
           </div>
 
-          <div id="form-messages" class="form-message" aria-live="polite"></div>
+          <div id="form-messages" class="form-message" aria-live="polite" role="status"></div>
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-              <span class="btn-text">Submit Booking Request</span>
-              <span class="btn-spinner" style="display: none;">
+              <span class="btn-text">Submit booking request</span>
+              <span class="btn-spinner" aria-hidden="true">
                 <i class="fas fa-spinner fa-spin"></i>
               </span>
             </button>
-            <a href="mailto:breazyproductions7@gmail.com" class="btn btn-secondary">Email Us</a>
+            <a href="mailto:breazyproductions7@gmail.com" class="btn btn-secondary">Email instead</a>
           </div>
         </form>
+        </div>
       </div>
     </section>
   </main>
@@ -122,46 +128,55 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="images/logo.png" alt="Breazy Productions Logo">
-          <p>Creating cinematic stories that stand the test of time.</p>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="footer-brand__logo">
+            <img src="images/logo.png" alt="Breazy Productions" width="160" height="48" loading="lazy">
+          </a>
+          <p class="footer-tagline">Cinematic videography for brands, artists, and moments worth replaying.</p>
         </div>
-
-        <div class="footer-links">
-          <div class="footer-nav">
-            <h4>Navigation</h4>
-            <ul>
-              <li><a href="index.html">Home</a></li>
-              <li><a href="about.html">About</a></li>
-              <li><a href="work.html">Work</a></li>
-              <li><a href="book.html" class="active">Book</a></li>
-              <li><a href="terms.html">Terms & Conditions</a></li>
-            </ul>
+        <nav class="footer-col" aria-label="Site links">
+          <p class="footer-col-title">Explore</p>
+          <ul class="footer-list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="work.html">Work</a></li>
+            <li><a href="book.html" class="active" aria-current="page">Book</a></li>
+            <li><a href="terms.html">Terms</a></li>
+          </ul>
+        </nav>
+        <div class="footer-col">
+          <p class="footer-col-title">Follow</p>
+          <div class="social-icons">
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Vimeo"><i class="fab fa-vimeo-v" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube" aria-hidden="true"></i></a>
           </div>
-
-          <div class="footer-social">
-            <h4>Follow Us</h4>
-            <div class="social-icons">
-              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-              <a href="#" aria-label="Vimeo"><i class="fab fa-vimeo-v"></i></a>
-              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-            </div>
-          </div>
-
-          <div class="footer-contact">
-            <h4>Contact</h4>
-            <ul>
-              <li><a href="mailto:breazyproductions7@gmail.com"><i class="fas fa-envelope"></i> breazyproductions7@gmail.com</a></li>
-              <li><a href="tel:+44772846189"><i class="fas fa-phone"></i> +44 7728 46189</a></li>
-            </ul>
-          </div>
+        </div>
+        <div class="footer-col footer-col--contact">
+          <p class="footer-col-title">Contact</p>
+          <ul class="footer-contact-list">
+            <li>
+              <a href="mailto:breazyproductions7@gmail.com" class="footer-contact-link">
+                <span class="footer-contact-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                <span>breazyproductions7@gmail.com</span>
+              </a>
+            </li>
+            <li>
+              <a href="tel:+44772846189" class="footer-contact-link">
+                <span class="footer-contact-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>
+                <span>+44 7728 46189</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-      
-      <div class="footer-bottom">
-        <p>&copy; 2024 Breazy Productions. All rights reserved. Developed by James Gomez</p>
+      <div class="footer-meta">
+        <p class="footer-copy">&copy; 2026 Breazy Productions. All rights reserved.</p>
+        <div class="footer-meta-links">
+          <a href="terms.html">Terms &amp; conditions</a>
+        </div>
       </div>
     </div>
   </footer>
