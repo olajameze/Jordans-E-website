@@ -420,13 +420,15 @@ h2{font-size:2.5rem;text-align:center;margin-bottom:1rem}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--gap-lg);margin-bottom:3rem}
 .project-card{border-radius:var(--radius-md);overflow:hidden;position:relative;box-shadow:0 5px 15px rgba(0,0,0,0.2);transition:transform var(--trans)}
 .project-card:hover{transform:translateY(-10px)}
-.project-image{position:relative;height:250px;overflow:hidden}
-.project-image img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
-.project-card:hover .project-image img{transform:scale(1.1)}
+.project-card__link{display:block;text-decoration:none;color:inherit;border-radius:inherit}
+.project-card__link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.project-image{position:relative;height:250px;overflow:hidden;background:#111}
+.project-image img,.project-image video{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;display:block}
+.project-card:hover .project-image img,.project-card:hover .project-image video{transform:scale(1.1)}
 .project-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease}
 .project-card:hover .project-overlay{opacity:1}
-.view-project{color:var(--text);text-decoration:none;padding:.6rem 1.25rem;border-radius:999px;border:2px solid rgba(255,255,255,0.85);font-weight:600;transition:all var(--trans)}
-.view-project:hover{background:#fff;color:#000}
+.view-project{color:var(--text);text-decoration:none;padding:.6rem 1.25rem;border-radius:999px;border:2px solid rgba(255,255,255,0.85);font-weight:600;transition:all var(--trans);display:inline-block;cursor:pointer}
+.project-card__link:hover .view-project{background:#fff;color:#000}
 .project-info{padding:1.25rem;background:#1a1a1a}
 .project-info h3{font-size:1.125rem;margin-bottom:.5rem}
 .project-info p{opacity:.75}
@@ -809,6 +811,10 @@ body {
     box-shadow: var(--box-shadow);
     transition: var(--transition);
     background: var(--bg-light);
+}
+
+.video-item[id] {
+    scroll-margin-top: 6rem;
 }
 
 .video-item:hover {
