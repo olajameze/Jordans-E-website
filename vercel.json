@@ -1,4 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "node scripts/pull-lfs-assets.cjs"
 }
