@@ -110,7 +110,17 @@ async function openVideoModal(video, item) {
 
     try {
         modalVideo.load();
-        await waitForMediaCanPlay(modalVideo);
+
+        // Prefer canplay, but do not block forever (some browsers are slow on large MP4s)
+        try {
+            await Promise.race([
+                waitForMediaCanPlay(modalVideo),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 12000))
+            ]);
+        } catch (readyErr) {
+            console.warn('Modal video readiness:', readyErr);
+            // Fall through: still try play() after partial load
+        }
 
         if (modalVideoWrapper) modalVideoWrapper.classList.remove('loading');
 
