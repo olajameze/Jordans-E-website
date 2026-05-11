@@ -2,9 +2,7 @@
   "private": true,
   "name": "breazy-productions-site",
   "scripts": {
-    "build": "node scripts/copy-static.js"
+    "build:dist": "node scripts/copy-static.js"
   },
-  "dependencies": {
-    "normalize.css": "^8.0.1"
-  }
+  "dependencies": {}
 }
