@@ -1,7 +1,7 @@
 /**
- * Vercel build: copy static site files into dist/ so the deployment
- * output always includes css, js, images, videos, and HTML.
- * Run: npm run build
+ * Copy static site assets into an output directory for hosts that deploy a folder (e.g. Vercel `public/`).
+ * Default output: `public/` — matches Vercel's default Output Directory for static projects.
+ * Override: STATIC_OUTPUT_DIR=dist npm run build:dist
  */
 'use strict';
 
@@ -9,7 +9,8 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.join(__dirname, '..');
-const out = path.join(root, 'dist');
+const outDirName = process.env.STATIC_OUTPUT_DIR || 'public';
+const out = path.join(root, outDirName);
 const copyDirs = ['css', 'js', 'images', 'videos'];
 
 if (Number(process.versions.node.split('.')[0]) < 16) {
@@ -35,7 +36,7 @@ for (const dir of copyDirs) {
     continue;
   }
   fs.cpSync(src, dest, { recursive: true });
-  console.log('[copy-static]', dir, '-> dist/' + dir);
+  console.log('[copy-static]', dir, '->', outDirName + '/' + dir);
 }
 
 const optional = ['.hintrc', 'favicon.ico', 'robots.txt'];
@@ -46,4 +47,4 @@ for (const name of optional) {
   }
 }
 
-console.log('[copy-static] done. HTML files:', htmlCount, '->', out);
+console.log('[copy-static] done. HTML files:', htmlCount, '->', outDirName + '/');
