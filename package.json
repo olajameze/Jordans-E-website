@@ -1,9 +1,12 @@
 {
   "private": true,
   "name": "breazy-productions-site",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "build": "node scripts/pull-lfs-assets.cjs && node scripts/copy-static.js",
-    "vercel-build": "node scripts/pull-lfs-assets.cjs && node scripts/copy-static.js",
+    "build": "node scripts/vercel-build.cjs",
+    "vercel-build": "node scripts/vercel-build.cjs",
     "build:dist": "node scripts/copy-static.js"
   },
   "dependencies": {}
