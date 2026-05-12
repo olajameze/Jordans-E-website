@@ -313,8 +313,8 @@ function initBookingForm() {
             isValid = false;
         }
         
-        // Validate booking date
-        if (!bookingDate.value) {
+        // Validate booking date (main input value; Flatpickr with altInput uses hidden real value)
+        if (!bookingDate.value || !bookingDate.value.trim()) {
             bookingDate.classList.add('error-field');
             showFieldError(bookingDate, 'Please select a date and time');
             isValid = false;
@@ -330,22 +330,7 @@ function initBookingForm() {
         field.parentNode.appendChild(error);
     }
 
-    // Initialize date picker
-    if (document.getElementById('booking-date')) {
-        flatpickr("#booking-date", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            minDate: "today",
-            maxDate: new Date().fp_incr(90),
-            minTime: "09:00",
-            maxTime: "17:00",
-            disable: [
-                function(date) {
-                    return date.getDay() === 0; // Disable Sundays
-                }
-            ]
-        });
-    }
+    /* Date picker: initialized once in initBookingCalendar() — do not double-init here */
 }
 
     // --------- URL param status handler (show success/error after redirect) ---------
