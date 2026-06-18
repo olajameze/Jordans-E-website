@@ -48,12 +48,6 @@ body{
 /* Screen-reader utility */
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
-/* Skip link (add <a href="#main" class="skip-link">Skip to content</a> as first element if you want) */
-.skip-link{
-  position:absolute;top:1rem;left:1rem;background:var(--accent);color:#000;padding:.5rem .75rem;border-radius:6px;transform:translateY(-120%);transition:transform .18s ease;z-index:12000
-}
-.skip-link:focus{transform:none;outline:3px solid rgba(255,255,255,0.08)}
-
 /* ---------- Loader ---------- */
 .loader{position:fixed;inset:0;background:var(--bg);display:flex;justify-content:center;align-items:center;z-index:9999}
 .loader-spinner{width:3.125rem;height:3.125rem;border:3px solid rgba(255,255,255,0.28);border-radius:50%;border-top-color:var(--text);animation:spin 1s linear infinite}
